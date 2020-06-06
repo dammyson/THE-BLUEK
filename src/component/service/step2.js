@@ -25,22 +25,20 @@ export default class Step2 extends Component {
 
 
   componentDidMount() {
-    const { getState } = this.props;
-    const state = getState();
-    this.setState({ data: state})
-   
+    const { otherParam } = this.props.route.params;
+    this.setState({ data: otherParam})
   }
 
 
   nextStep = () => {
-    const { next, saveState } = this.props;
-    // Save state for use in other steps
     if (this.state.subsection_data.length < 1) {
       Alert.alert('Validation failed', "All fields are requried", [{ text: 'Okay' }])
       return
     }
-    saveState({ subsection_data: this.state.subsection_data });
-    next();
+    this.props.navigation.navigate('Step3', {
+      Step1: this.state.data,
+      Step2:  this.state.subsection_data,
+    });
   };
 
 
@@ -57,12 +55,12 @@ export default class Step2 extends Component {
   }
 
   render() {
-
+    const { state, goBack } = this.props.navigation;  
 
 
     var left = (
       <Left style={{ flex: 1 }}>
-        <Button transparent onPress={() => Actions.pop()}>
+        <Button transparent  onPress={()=>{ goBack(null)}}>
           <Icon
             active
             name="arrowleft"

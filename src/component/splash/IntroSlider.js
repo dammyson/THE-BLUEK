@@ -54,7 +54,7 @@ export default class IntroSlider extends Component {
             <TouchableOpacity style={styles.buttonContainer} 
               onPress ={() =>  this.props.navigation.navigate('Authentication')} >
                 <Text style={styles.buttonText}
-              >Sign Up</Text>
+              >{categories[i].key}</Text>
   
               </TouchableOpacity>
             </View>
@@ -67,21 +67,21 @@ export default class IntroSlider extends Component {
 }
 var categories = [
   {
-    key: 'somethun',
+    key: 'Next',
     title: 'Put your money where \n your phone is',
     text: 'Create a paychange wallet, and pay for petty \n transactions with your mobile phone.',
     image: require('../../assets/iconfour.png'),
     backgroundColor: '#59b2ab',
   },
   {
-    key: 'somethun-dos',
+    key: 'Next',
     title: 'Fund your mobile wallet  ',
     text: 'Fund your wallet from your bank account, and from merchants around you.',
     image: require('../../assets/icontwo.png'),
     backgroundColor: '#febe29',
   },
   {
-    key: 'somethun-dos',
+    key: 'Sign in',
     title: 'No More Change wahala !',
     text: 'Receive your change and Pay for goods and services, on the go!',
     image: require('../../assets/iconthree.png'),

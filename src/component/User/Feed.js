@@ -193,8 +193,8 @@ class Feed extends React.Component {
             style={{ width: Dimensions.get('window').width - 100, height: Dimensions.get('window').height / 1.8, }}>
 
                 <ImageBackground
-                    style={{ flex: 1, borderRadius: 12, marginTop: 0 }}
-                    source={require('../../assets/sanket.png')}
+                    style={{ flex: 1, borderRadius: 20, marginTop: 0, backgroundColor:'#9dc5fe' }}
+                    source={item.image_url != null || item.image_url != ''  ? { uri: item.image_url } :  { uri:"https://ipsumimage.appspot.com/640x360"}}
                     imageStyle={{ overflow: 'hidden', position: "absolute", borderRadius: 20, }}
                 >
                     <View style={styles.shareConatainer}>

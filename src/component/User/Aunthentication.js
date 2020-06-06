@@ -271,7 +271,7 @@ export default class Authentication extends Component {
                       placeholder="+23481123456789"
                       placeholderTextColor='#000'
                       returnKeyType="next"
-                      onSubmitEditing={() => this.passwordInput.focus()}
+                      onSubmitEditing={() => this.processRegistration()}
                       keyboardType="numeric"
                       autoCapitalize="none"
                       autoCorrect={false}

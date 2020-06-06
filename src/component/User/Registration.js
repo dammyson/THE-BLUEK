@@ -39,9 +39,12 @@ export default class Registration extends Component {
   }
 
   componentDidMount() {
+
+    const { userDetails  } = this.props.route.params;
     this.setState({
-      phone: this.props.navigation.getParam("userDetails", "defaultValue").phone
+      phone: userDetails.phone
     })
+
 
   }
 

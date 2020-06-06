@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Dimensions, Text, ScrollView, TextInput, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Dimensions, Text, ScrollView, AsyncStorage, View, TouchableOpacity } from 'react-native';
 import {
     Icon,
     Container,
@@ -12,16 +12,17 @@ import {
     Button,
     Col,
 } from 'native-base';
-import CardComponent from '../User/CardComponenet';
-import { Actions } from 'react-native-router-flux';
+
 
 import ListPanel from '../utilities/ListPanel'
 import GalleryGrid from '../utilities/GalleryGrid'
 import Grid from '../utilities/Grid'
 import homeData from '../utilities/home'
 import { Icon as Fine, Avatar } from 'react-native-elements';
-
-
+const URL = require("../../component/server");
+import {
+    SkypeIndicator,
+} from 'react-native-indicators';
 export default class Profile extends React.Component {
 
     static navigationOptions = {
@@ -34,15 +35,39 @@ export default class Profile extends React.Component {
         super(props)
         this.state = {
             activeIndex: 0,
+            loading:true,
             auth: "",
-            name: "",
+            bio: {},
+            services: [],
+            reviews: [],
+            favourites: [],
+            gallery:[]
         }
+    }
+
+
+    componentDidMount() {
+        AsyncStorage.getItem('auth').then((value) => {
+            if (value == '') {
+            } else {
+                this.setState({ auth: value })
+            }
+            this.makeRemoteRequest();
+        })
+
+
+        this.props.navigation.addListener(
+            'didFocus',
+            payload => {
+             this.makeRemoteRequest();
+            }
+          );
     }
 
     makeRemoteRequest = () => {
         const { auth } = this.state
         this.setState({ loading: true });
-        fetch(URL.url + '/api/user', {
+        fetch(URL.url + '/api/service/provider/profile', {
             method: 'GET', headers: {
                 Accept: 'application/json',
                 'Authorization': 'Bearer ' + auth,
@@ -53,7 +78,8 @@ export default class Profile extends React.Component {
             .then(res => res.json())
             .then(res => {
                 console.warn(res);
-                this.setState({ name: res.user.name })
+                this.setState({ loading:false, bio: res.data.bio, services: res.data.services, reviews: res.data.reviews, favourites: res.data.favourites, gallery: res.data.gallery })   
+               
             })
             .catch(error => {
                 alert(error.message);
@@ -81,24 +107,18 @@ export default class Profile extends React.Component {
     _renderGridList(data) {
         return (
             <ListPanel>
-                <Grid>
-                    {
-                        data.items.map((item, idx) => {
-                            return <GalleryGrid onPress={() => this._pressProduct(item.id)} key={idx} {...item} />
-                        })
-                    }
-                </Grid>
+                
             </ListPanel>
         )
     }
     renderSection = () => {
+        const { services, reviews, gallery, favourites, } = this.state
         if (this.state.activeIndex == 0) {
             return (
                 <View>
                 <View style={{justifyContent:'flex-end', alignItems:'center', marginTop:10,}} >
 
                         <TouchableOpacity  onPress={()=>  this.props.navigation.navigate('CreateService')} style={styles.nextButtonContainer} block iconLeft>
-
                         <Fine
                                     active
                                     name="plus"
@@ -112,7 +132,7 @@ export default class Profile extends React.Component {
                       </View>
 
                 <View>
-                    {this.renderResuts()}
+                    {this.renderResuts(services)}
                 </View>
 
             </View >
@@ -122,7 +142,7 @@ export default class Profile extends React.Component {
             return (
                 <View>
                     <ScrollView>
-                        {this._renderGridList(homeData.grid_fashion)}
+                        {this._renderGridList(gallery)}
                     </ScrollView>
 
                 </View>
@@ -131,12 +151,33 @@ export default class Profile extends React.Component {
         else if (this.state.activeIndex == 2) {
             return (
                 <View>
-                    {this.renderReviews()}
+                    {this.renderReviews(services)}
                 </View>
+            )
+        }else if(this.state.activeIndex == 3){
+            return (
+                <View>
+                <View>
+                    {this.renderResuts(services)}
+                </View>
+
+            </View >
             )
         }
     }
     render() {
+        const { bio} = this.state
+        if (this.state.loading) {
+            return (
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
+                    <View style={{ height: 90, alignItems: 'center', justifyContent: 'center', }}>
+                        <SkypeIndicator count={5} color='#1A4093' />
+                        <Text style={{ fontSize: 13, fontWeight: '500', flex: 1, color: '#1A4093' }}>Please wait...</Text>
+                    </View>
+
+                </View>
+            );
+        }
         return (
             <Container style={{ backgroundColor: '#f5f5f5' }}>
                 <View style={styles.container}>
@@ -147,16 +188,12 @@ export default class Profile extends React.Component {
                                 rounded
                                 size="large"
                                 overlayContainerStyle={{ backgroundColor: 'white', borderColor: "#749AD1", borderWidth: 5 }}
-                                source={{
-                                    uri:
-                                        'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-                                }}
+                                source={bio.image_url != null || bio.image_url != ''  ? { uri: bio.image_url } : { uri:"https://ipsumimage.appspot.com/640x360"}}
                             />
 
                         </View>
                         <View style={styles.titleContainer}>
-                            <Text style={{ color: '#000', fontWeight: '700', fontSize: 20, marginLeft: 10 }}>Eventure</Text>
-                            <Text style={{ color: '#000', fontWeight: '200', fontSize: 15, marginLeft: 10 }}>Event mamagement</Text>
+                            <Text style={{ color: '#000', fontWeight: '700', fontSize: 20, marginLeft: 10 }}>{bio.name}</Text>
                         </View>
 
 
@@ -171,7 +208,7 @@ export default class Profile extends React.Component {
 
                                 />
 
-                                <Text style={styles.performance}>999</Text>
+                            <Text style={styles.performance}>{bio.unsatisfied}</Text>
                                 <Text style={styles.performanceTitle}>Unsatisfied</Text>
 
 
@@ -186,7 +223,7 @@ export default class Profile extends React.Component {
 
                                 />
 
-                                <Text style={styles.performance}>999</Text>
+                                <Text style={styles.performance}>{bio.satisfied}</Text>
                                 <Text style={styles.performanceTitle}>Satisfied</Text>
 
 
@@ -203,7 +240,7 @@ export default class Profile extends React.Component {
 
                                 />
 
-                                <Text style={styles.performance}>999</Text>
+                                <Text style={styles.performance}>{bio.work_experiences}</Text>
                                 <Text style={styles.performanceTitle}>Experiances</Text>
 
 
@@ -215,8 +252,8 @@ export default class Profile extends React.Component {
                             <Text style={{ color: '#000', textAlign: 'center', fontWeight: '200', fontSize: 12, marginTop: 15, marginLeft: 15, marginRight: 15 }}> The cooperative movement began in Europe in the 19th century, primarily in Britain and France as a self-help Victoria Island, Lagos</Text>
                         </View>
 
-                        <TouchableOpacity onPress={() => this._pressSeeAllProducts()} style={styles.buttonContainer} block iconLeft>
-                            <Text style={{ color: '#fdfdfd', fontWeight: '700' }}>Contact Us</Text>
+                        <TouchableOpacity  style={styles.buttonContainer} block iconLeft>
+                            <Text style={{ color: '#fdfdfd', fontWeight: '700' }}>Edit profile</Text>
                         </TouchableOpacity>
 
                     </View>
@@ -266,6 +303,20 @@ export default class Profile extends React.Component {
                             <Text style={[styles.tabText, this.state.activeIndex == 2 ? { color: '#394fa1' } : { color: 'gray' }]}>Reviews</Text>
                         </TouchableOpacity>
 
+                        <TouchableOpacity style={{ alignItems: 'center' }}
+                            onPress={() => this.segmentClicked(3)}
+                            active={this.state.activeIndex == 3}
+                        >
+                            <Fine
+
+                                name="heart"
+                                type='antdesign'
+                                color={this.state.activeIndex == 3 ? '#394fa1' : 'gray'}
+
+                            />
+                            <Text style={[styles.tabText, this.state.activeIndex == 3 ? { color: '#394fa1' } : { color: 'gray' }]}>Favorite</Text>
+                        </TouchableOpacity>
+
 
                     </View>
 
@@ -278,13 +329,16 @@ export default class Profile extends React.Component {
             </Container>
         );
     }
-    renderResuts() {
+    renderResuts(categories) {
         let cat = [];
+        const { navigate } = this.props.navigation;
         for (var i = 0; i < categories.length; i++) {
+            let id = categories[i].id ;
             cat.push(
                 <View style={styles.resultBox}>
 
-                    <TouchableOpacity onPress={() => this._pressSeeAllProducts()} style={styles.loacationText}>
+                    <TouchableOpacity onPress={()=>  navigate('ServieDetails' , 
+                      { id:id  })}  style={styles.loacationText}>
 
                         <View style={styles.resultDescription}>
                             <View style={styles.resultImage}>
@@ -292,13 +346,11 @@ export default class Profile extends React.Component {
                                     rounded
                                     size="medium"
                                     source={{
-                                        uri:
-                                            'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-                                    }}
+                                        uri: categories[i].image_url, }}
                                 />
                             </View>
                             <View style={styles.resultTextDescription}>
-                                <Text style={{ color: '#000', fontWeight: '700', fontSize: 14, marginLeft: 10 }}>Sweet Fire</Text>
+                                <Text style={{ color: '#000', fontWeight: '700', fontSize: 14, marginLeft: 10 }}>{id}  {categories[i].short_brief}</Text>
                                 <Text style={{ color: '#000', fontWeight: '200', fontSize: 12, marginLeft: 10 }}>{categories[i].description}</Text>
                             </View>
 
@@ -311,7 +363,7 @@ export default class Profile extends React.Component {
     }
 
 
-    renderReviews() {
+    renderReviews(categories) {
         let cat = [];
         for (var i = 0; i < categories.length; i++) {
             cat.push(
@@ -347,56 +399,6 @@ export default class Profile extends React.Component {
         this.props.navigation.navigate('ServieDetails');
     }
 }
-var categories = [
-    {
-        id: 1,
-        title: 'Cooperative Family Feeding(CFF)',
-        image: 'https://www.ita-obe.com/images/direct-customer.png',
-        description: 'The cooperative movement began in Europe in the 19th century, primarily in Britain and France as a self-help    '
-    },
-    {
-        id: 2,
-        title: 'Cooperative Family Feeding(CFF)',
-        image: 'https://www.ita-obe.com/images/direct-customer.png',
-        description: 'The cooperative movement began in Europe in the 19th century, primarily in Britain and France as a self-help    '
-    },
-    {
-        id: 1,
-        title: 'Cooperative Family Feeding(CFF)',
-        image: 'https://www.ita-obe.com/images/direct-customer.png',
-        description: 'The cooperative movement began in Europe in the 19th century, primarily in Britain and France as a self-help    '
-    },
-    {
-        id: 2,
-        title: 'Cooperative Family Feeding(CFF)',
-        image: 'https://www.ita-obe.com/images/direct-customer.png',
-        description: 'The cooperative movement began in Europe in the 19th century, primarily in Britain and France as a self-help    '
-    },
-    {
-        id: 1,
-        title: 'Cooperative Family Feeding(CFF)',
-        image: 'https://www.ita-obe.com/images/direct-customer.png',
-        description: 'The cooperative movement began in Europe in the 19th century, primarily in Britain and France as a self-help    '
-    },
-    {
-        id: 2,
-        title: 'Cooperative Family Feeding(CFF)',
-        image: 'https://www.ita-obe.com/images/direct-customer.png',
-        description: 'The cooperative movement began in Europe in the 19th century, primarily in Britain and France as a self-help    '
-    },
-    {
-        id: 1,
-        title: 'Cooperative Family Feeding(CFF)',
-        image: 'https://www.ita-obe.com/images/direct-customer.png',
-        description: 'The cooperative movement began in Europe in the 19th century, primarily in Britain and France as a self-help    '
-    },
-    {
-        id: 2,
-        title: 'Cooperative Family Feeding(CFF)',
-        image: 'https://www.ita-obe.com/images/direct-customer.png',
-        description: 'The cooperative movement began in Europe in the 19th century, primarily in Britain and France as a self-help    '
-    }
-];
 
 const styles = StyleSheet.create({
     container: {

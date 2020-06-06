@@ -46,16 +46,14 @@ class Step3 extends Component {
 
     })
    
-    const { getState } = this.props;
-    const state = getState();
-
+    const { Step1, Step2  } = this.props.route.params;
+  
     this.setState({
-        name: state.name,
-        description: state.description,
-        location: state.location,
-        subsection_data: state.subsection_data,
-       
-
+        name: Step1.name,
+        description: Step1.description,
+        location: Step1.location,
+        subsection_data: Step2,
+  
     })
 
   }
@@ -69,7 +67,7 @@ class Step3 extends Component {
   pickSingle(cropit, circular = false, mediaType) {
     ImagePicker.openPicker({
       width: 500,
-      height: 300,
+      height: 500,
       cropping: cropit,
       cropperCircleOverlay: circular,
       sortOrder: 'none',
@@ -117,7 +115,7 @@ class Step3 extends Component {
       name: 'ayo.jpg',
       size: image.size,
     });
-    datab.append('type', 'pp');
+    datab.append('type', 'sp');
     datab.append('Content-Type', image.mime);
 
     //build payload packet
@@ -138,10 +136,10 @@ console.warn(postData);
       .then((responseJson) => {
         if (!responseJson.status) {
         this.setState({
-          img_url: 'http://api.bluekola.com' + responseJson.image_url,
+          img_url: 'http://api.bluekola.com/' + responseJson.image_url,
       });
 
-      console.warn('responseJson',  'http://api.bluekola.com' + responseJson.image_url);
+      console.warn('responseJson',  'http://api.bluekola.com/' + responseJson.image_url);
       Toast.show({
           text: 'Picture uploaded sucessfully !',
           position: 'bottom',
@@ -165,9 +163,9 @@ console.warn(postData);
   async processCreateServices() {
 
 
-  /*  const { auth, image, name,img_url,  description, location, subsection_data} = this.state
-  
-
+  const { auth, image, name,img_url,  description, location, subsection_data} = this.state
+  console.warn(  name,  description, location, subsection_data)
+ 
     if (image == null ) {
       Alert.alert('Validation failed', 'Please select and image for the organizer', [{ text: 'Okay' }])
       return;
@@ -206,10 +204,11 @@ console.warn(postData);
             if (res.status) {
                 this.setState({ buttonState: 'success' })
                 setTimeout(() => {
-                  this.props.navigation.navigate('Home');
+                  this.props.navigation.navigate('Profile');
                 }, 2000);
               
             } else {
+              this.setState({ buttonState: 'error' })
                 Alert.alert('Registration failed', res.message, [{ text: 'Okay' }])
               
             }
@@ -222,15 +221,14 @@ console.warn(postData);
             alert(error.message);
         });
 
-*/
 }
 
 
   render() {
-    const { navigate } = this.props;
+    const { state, goBack } = this.props.navigation; 
     var left = (
       <Left style={{ flex: 1 }}>
-        <Button transparent onPress={this.props.back}>
+         <Button transparent  onPress={()=>{ goBack(null)}}>
           <Icon
             active
             name="arrowleft"
@@ -282,21 +280,16 @@ console.warn(postData);
    
     return (
       <Container style={{ backgroundColor: '#f5f5f5' }}>
-        <Navbar left={left} right={right} title='Profile' bg='#fff' />
+        <Navbar left={left} right={right} title={this.state.name} bg='#fff' />
         <Content>
           <View style={styles.backgroundImage}>
             <View style={{ flex: 1 }}>
-            <Button  block iconLeft>
-               <Text>LOL</Text>
-                </Button>
               <View style={styles.pageHeading}>
                 <Text style={styles.title}>Upload Image </Text>
                 <Text style={styles.description}>Put up an image that best describes the service
 you are willing to offer  </Text>
               </View>
               <View style={styles.form}>
-                <Text style={styles.label}>Enter Service name </Text>
-
                 {this.state.image == null ?
                   <ImageBackground
                     style={styles.pictureContainer}>
@@ -320,7 +313,7 @@ you are willing to offer  </Text>
                   <ImageBackground
                     opacity={this.state.img_url != null ? 1 : 0.5}
                     source={this.state.img_url != null ? { uri: this.state.img_url } : this.state.image}
-                    style={[styles.pictureContainer, { backgroundColor: "#000" }]}>
+                    style={[styles.pictureContainer, { backgroundColor: "#8d96a6" }]}>
                     <View style={{ alignItems: 'center', justifyContent: 'center', }}>
                       <Button style={{ alignItems: 'center' }} transparent onPress={() => this.pickSingle(true)}>
                         <Icon
@@ -448,11 +441,11 @@ const styles = StyleSheet.create({
   },
 
   pictureContainer: {
-    height: Dimensions.get('window').height / 3,
+    height: Dimensions.get('window').width - 120,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#8d96a6',
-    margin: 10,
+    margin: 20,
     borderRadius: 15
   },
   logo: {

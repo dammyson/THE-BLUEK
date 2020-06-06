@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet, AsyncStorage, Dimensions, ImageBackground } from "react-native";
+import { View, StyleSheet, AsyncStorage, Dimensions, ImageBackground , StatusBar} from "react-native";
 import { Container, Content, Text, Button, Left, Right, Body, Title, List, Item, Thumbnail, Grid, Col } from 'native-base';
 import { Card, Icon, SocialIcon } from 'react-native-elements'
 
@@ -42,9 +42,11 @@ export default class ServieDetails extends Component {
             this.processGetEvent()
         })
 
-      /*  this.setState({
-            id: this.props.navigation.getParam("id", "defaultValue")
-          })*/
+        const { id  } = this.props.route.params;
+        console.warn(id)
+        this.setState({
+            id: id
+          })
     }
 
 
@@ -111,6 +113,7 @@ export default class ServieDetails extends Component {
         if (this.state.loading) {
             return (
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
+                      <StatusBar barStyle="dark-content" hidden={false} backgroundColor="transparent" translucent={true} />
                     <View style={{ height: 90, alignItems: 'center', justifyContent: 'center', }}>
                         <SkypeIndicator count={5} color='#1A4093' />
                         <Text style={{ fontSize: 13, fontWeight: '500', flex: 1, color: '#1A4093' }}>Please wait...</Text>
@@ -122,13 +125,18 @@ export default class ServieDetails extends Component {
 
         return (
             <Container style={{ backgroundColor: '#f5f5f5' }}>
+                
+
                 <Navbar left={left} right={right} title={details.short_brief} bg='#fff' />
                 <Content>
+                      <StatusBar backgroundColor="#8d96a6"  />
                     <View style={styles.backgroundImage}>
                         <View style={{ flex: 1 }}>
 
 
-                            <ImageBackground source={{ uri: "https://reactjs.org/logo-og.png" }} style={styles.image}>
+                            <ImageBackground 
+                             source={details.image_url != null || details.image_url != ''  ? { uri: details.image_url } : { uri:"https://ipsumimage.appspot.com/640x360"}}
+                             style={styles.image}>
                                
                             </ImageBackground>
 

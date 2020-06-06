@@ -7,7 +7,9 @@ import CreateService from '../service/Create';
 
 import ServieDetails from '../service/ServieDetails';
 
-
+import Step1 from "../service/step1";
+import Step2 from "../service/step2";
+import Step3 from "../service/step3";
 
 
 
@@ -27,7 +29,7 @@ class AppStack extends Component {
              initialRouteName="Profile"
              >
             <Stack.Screen navigation={this.props.navigation}  name="Profile" component={Profile}  />
-            <Stack.Screen navigation={this.props.navigation}  name="CreateService" component={CreateService}  />
+            <Stack.Screen   name="CreateService" component={CreateService}  />
             <Stack.Screen navigation={this.props.navigation}  name="ServieDetails" component={ServieDetails}  />
           </Stack.Navigator>
       );

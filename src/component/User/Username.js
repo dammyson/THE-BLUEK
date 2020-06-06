@@ -38,25 +38,28 @@ export default class Username extends Component {
 
 
   componentDidMount() {
+    const { userDetails  } = this.props.route.params;
     this.setState({
-      userDetails: this.props.navigation.getParam("userDetails", "defaultValue")
+      userDetails: userDetails
     })
-  
+
     }
 
     replaceScreen = () => {
       const { userDetails } = this.state
-      this.props.navigation.dispatch({
+      this.props.navigation.navigate('Home');
+   /*   this.props.navigation.dispatch({
         key: 'Home',
         type: 'ReplaceCurrentScreen',
         routeName: 'Home',
         params: { },
-      });
+      });  */
     };
 
 
   processRegistration() {
     const { username, name,userDetails} = this.state
+  console.warn(username, name,userDetails)
     if (username == "" || name == "") {
       Alert.alert('Validation failed', ' Fields cannot be empty', [{ text: 'Okay' }])
       return
@@ -245,7 +248,7 @@ const styles = StyleSheet.create({
   title: {
     marginTop: 20,
     marginBottom: 10,
-    fontSize: 20,
+    fontSize: 16,
     color: '#000',
     textAlign: 'left',
     fontWeight: '800'

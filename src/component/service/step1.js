@@ -4,6 +4,7 @@ import { Container, Content, Text, Button, Left, Right, Body, Title, List, Item,
 import { Card, Icon, SocialIcon } from 'react-native-elements'
 
 
+
 import Navbar from '../utilities/Navbar';
 import color from '../utilities/color';
 
@@ -26,26 +27,17 @@ export default class CreateService extends Component {
 
 
   componentDidMount() {
-    AsyncStorage.getItem('auth').then((value) => {
-      if (value == '') {
-
-      } else {
-        this.setState({ auth: value })
-      }
-
-    })
+    
   }
 
   nextStep = () => {
-    const { next, saveState } = this.props;
-    this.props.navigation.navigate('Home');
-  /*  // Save state for use in other steps
     if (this.state.name == "" || this.state.description == "" | this.state.location == "") {
         Alert.alert('Validation failed', "All fields are requried", [{ text: 'Okay' }])
       return
     }
-    saveState({ name: this.state.name, description: this.state.description, location: this.state.location });
-    next();  */
+    this.props.navigation.navigate('Step2', {
+      otherParam: { name: this.state.name, description: this.state.description, location: this.state.location },
+    });
   };
 
 
@@ -64,11 +56,11 @@ export default class CreateService extends Component {
 
   render() {
 
-
+    const { state, goBack } = this.props.navigation; 
 
     var left = (
       <Left style={{ flex: 1 }}>
-        <Button transparent onPress={() => Actions.pop()}>
+        <Button transparent  onPress={()=>{ goBack(null)}}>
           <Icon
             active
             name="arrowleft"
@@ -107,9 +99,13 @@ export default class CreateService extends Component {
         <Navbar left={left} right={right} title='Profile' bg='#fff' />
         <Content>
           <View style={styles.backgroundImage}>
+
+         
             <View style={{ flex: 1 }}>
               <View style={styles.pageHeading}>
                 <Text style={styles.title}>Name and Description </Text>
+
+
                 <Text style={styles.description}>Create a new service you are prepared to offer and increase your client base  </Text>
               </View>
               <View style={styles.form}>

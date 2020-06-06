@@ -37,8 +37,10 @@ export default class Otp extends Component {
   }
 
   componentDidMount() {
+
+    const { userDetails  } = this.props.route.params;
     this.setState({
-      userDetails: this.props.navigation.getParam("userDetails", "defaultValue")
+      userDetails: userDetails
     })
 
    
@@ -116,11 +118,16 @@ export default class Otp extends Component {
    
     this.setState({ buttonState: 'busy' })
     const { userDetails } = this.state
+
     console.warn(userDetails)
+
     setTimeout(() => {
       this.setState({ buttonState: 'success' })
       setTimeout(() => {
-        this.replaceScreen()
+        this.props.navigation.navigate('Registration', 
+        {
+          userDetails: userDetails,
+        })
       }, 2000);
   
     }, 2000);
@@ -141,7 +148,7 @@ export default class Otp extends Component {
               <View style={styles.formArea}>
 
               <View style={styles.arrowContainer}>
-              <TouchableOpacity onPress={() => Actions.pop()} >
+              <TouchableOpacity  onPress={() => this.props.navigation.goBack(null)} >
               <Icon
                 name="arrowleft"
                 size={30}

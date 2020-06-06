@@ -13,6 +13,7 @@ import ForgotPassword from '../password/ForgotPassword';
 
 import Home from '../User/Home';
 import Create from '../service/Create';
+import Profile from '../User/Profile';
 
 import { Root } from 'native-base';
 
@@ -31,7 +32,7 @@ class AppStack extends Component {
               //headerLeft: null,
               headerShown: false,
              }}
-             initialRouteName="Create"
+             initialRouteName="Splash"
              >
             <Stack.Screen name="Splash" component={Splash}  />
             <Stack.Screen name="IntroSlider" component={IntroSlider}  />
@@ -40,9 +41,10 @@ class AppStack extends Component {
             <Stack.Screen name="Username" component={Username}  />
             <Stack.Screen name="Otp" component={Otp}  />
             <Stack.Screen name="ForgotPassword" component={ForgotPassword}  />
-            <Stack.Screen navigation={this.props.navigation}  name="Create" component={Create}  />
+            <Stack.Screen   name="Create" component={Create}  />
 
             <Stack.Screen name="Home" component={Home}  />
+            <Stack.Screen name="Profile" component={Profile}  />
           </Stack.Navigator>
         </NavigationContainer>
         </Root>
