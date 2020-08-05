@@ -9,6 +9,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Step1 from "./step1";
 import Step2 from "./step2";
 import Step3 from "./step3";
+import Step4 from "./step4";
 
 
 class Create extends Component {
@@ -28,7 +29,8 @@ class Create extends Component {
              >
             <Stack.Screen name="Step1" component={Step1}  />
             <Stack.Screen   name="Step2" component={Step2}  />
-            <Stack.Screen navigation={this.props.navigation}  name="Step3" component={Step3}  />
+            <Stack.Screen   name="Step3" component={Step3}  />
+            <Stack.Screen navigation={this.props.navigation}  name="Step4" component={Step4}  />
           </Stack.Navigator>
       );
   }

@@ -8,6 +8,7 @@
       white: '#FFFFFF',
       black: '#000',
       dark_blue:'#17153D',
+      light_blue:'#749AD1'
     }
 
 export default colors

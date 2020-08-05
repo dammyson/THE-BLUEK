@@ -14,6 +14,10 @@ import ForgotPassword from '../password/ForgotPassword';
 import Home from '../User/Home';
 import Create from '../service/Create';
 import Profile from '../User/Profile';
+import Categories from '../service/Categories';
+import Settings from '../settings/Settings';
+
+
 
 import { Root } from 'native-base';
 
@@ -45,6 +49,10 @@ class AppStack extends Component {
 
             <Stack.Screen name="Home" component={Home}  />
             <Stack.Screen name="Profile" component={Profile}  />
+            <Stack.Screen name="Categories" component={Categories}  />
+            <Stack.Screen name="Settings" component={Settings}  />
+
+
           </Stack.Navigator>
         </NavigationContainer>
         </Root>

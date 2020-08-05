@@ -41,18 +41,7 @@ export default class CreateService extends Component {
   };
 
 
-  addSection() {
-    const { section_name, min, max } = this.state
-    if (section_name == "" || min == "" || max == "") {
-      Alert.alert('Validation failed', "All fields are requried", [{ text: 'Okay' }])
-      return
-    }
-    var instant_array = []
-    instant_array = this.state.subsection_data
-    new_subsection = { name: section_name, min_price: min, max_price: max, }
-    instant_array.push(new_subsection);
-    this.setState({ subsection_data: instant_array, section_name: '', min: '', max: '' })
-  }
+
 
   render() {
 

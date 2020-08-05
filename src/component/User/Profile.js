@@ -23,6 +23,8 @@ const URL = require("../../component/server");
 import {
     SkypeIndicator,
 } from 'react-native-indicators';
+
+import { getToken } from '../utilities/index';
 export default class Profile extends React.Component {
 
     static navigationOptions = {
@@ -35,51 +37,65 @@ export default class Profile extends React.Component {
         super(props)
         this.state = {
             activeIndex: 0,
-            loading:true,
+            loading: true,
             auth: "",
             bio: {},
             services: [],
             reviews: [],
             favourites: [],
-            gallery:[]
+            gallery: []
         }
     }
 
 
     componentDidMount() {
-        AsyncStorage.getItem('auth').then((value) => {
-            if (value == '') {
-            } else {
-                this.setState({ auth: value })
-            }
-            this.makeRemoteRequest();
-        })
-
-
+       this.makeRemoteRequest()  
         this.props.navigation.addListener(
             'didFocus',
             payload => {
              this.makeRemoteRequest();
             }
-          );
+          ); 
     }
 
-    makeRemoteRequest = () => {
+    makeRemoteRequest = async() => {
         const { auth } = this.state
         this.setState({ loading: true });
         fetch(URL.url + '/api/service/provider/profile', {
             method: 'GET', headers: {
                 Accept: 'application/json',
-                'Authorization': 'Bearer ' + auth,
+                'Authorization': 'Bearer ' +await getToken(),
                 'Content-Type': 'application/json',
             }
         })
-
             .then(res => res.json())
             .then(res => {
                 console.warn(res);
-                this.setState({ loading:false, bio: res.data.bio, services: res.data.services, reviews: res.data.reviews, favourites: res.data.favourites, gallery: res.data.gallery })   
-               
+                this.setState({ loading: false, bio: res.data.bio, services: res.data.services, reviews: res.data.reviews, favourites: res.data.favourites, gallery: res.data.gallery })
+            })
+            .catch(error => {
+                alert(error.message);
+                this.setState({ loading: false })
+            });
+    };
+
+
+    checkBvn = async () => {
+
+        this.setState({ loading: true });
+        fetch(URL.url + '/api/services/check_bvn', {
+            method: 'GET', headers: {
+                Accept: 'application/json',
+                'Authorization': 'Bearer ' + await getToken(),
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(res => res.json())
+            .then(res => {
+                this.setState({ loading: false });
+                if (res.status) {
+                    this.props.navigation.navigate('CreateService')
+                }
             })
             .catch(error => {
                 alert(error.message);
@@ -107,7 +123,7 @@ export default class Profile extends React.Component {
     _renderGridList(data) {
         return (
             <ListPanel>
-                
+
             </ListPanel>
         )
     }
@@ -116,26 +132,22 @@ export default class Profile extends React.Component {
         if (this.state.activeIndex == 0) {
             return (
                 <View>
-                <View style={{justifyContent:'flex-end', alignItems:'center', marginTop:10,}} >
+                    <View style={{ justifyContent: 'flex-end', alignItems: 'center', marginTop: 10, }} >
+                        <TouchableOpacity onPress={() => this.checkBvn()} style={styles.nextButtonContainer} block iconLeft>
+                            <Fine
+                                active
+                                name="plus"
+                                type='entypo'
+                                color='#fff'
 
-                        <TouchableOpacity  onPress={()=>  this.props.navigation.navigate('CreateService')} style={styles.nextButtonContainer} block iconLeft>
-                        <Fine
-                                    active
-                                    name="plus"
-                                    type='entypo'
-                                    color='#fff'
-
-                                />
-                        <Text style={styles.nextButtonText}>Add New Service </Text>
-                      </TouchableOpacity>
-               
-                      </View>
-
-                <View>
-                    {this.renderResuts(services)}
-                </View>
-
-            </View >
+                            />
+                            <Text style={styles.nextButtonText}>Add New Service </Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View>
+                        {this.renderResuts(services)}
+                    </View>
+                </View >
             )
         }
         else if (this.state.activeIndex == 1) {
@@ -154,19 +166,19 @@ export default class Profile extends React.Component {
                     {this.renderReviews(services)}
                 </View>
             )
-        }else if(this.state.activeIndex == 3){
+        } else if (this.state.activeIndex == 3) {
             return (
                 <View>
-                <View>
-                    {this.renderResuts(services)}
-                </View>
+                    <View>
+                        {this.renderResuts(services)}
+                    </View>
 
-            </View >
+                </View >
             )
         }
     }
     render() {
-        const { bio} = this.state
+        const { bio } = this.state
         if (this.state.loading) {
             return (
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
@@ -188,7 +200,7 @@ export default class Profile extends React.Component {
                                 rounded
                                 size="large"
                                 overlayContainerStyle={{ backgroundColor: 'white', borderColor: "#749AD1", borderWidth: 5 }}
-                                source={bio.image_url != null || bio.image_url != ''  ? { uri: bio.image_url } : { uri:"https://ipsumimage.appspot.com/640x360"}}
+                                source={bio.image_url != null || bio.image_url != '' ? { uri: bio.image_url } : { uri: "https://ipsumimage.appspot.com/640x360" }}
                             />
 
                         </View>
@@ -208,7 +220,7 @@ export default class Profile extends React.Component {
 
                                 />
 
-                            <Text style={styles.performance}>{bio.unsatisfied}</Text>
+                                <Text style={styles.performance}>{bio.unsatisfied}</Text>
                                 <Text style={styles.performanceTitle}>Unsatisfied</Text>
 
 
@@ -252,7 +264,7 @@ export default class Profile extends React.Component {
                             <Text style={{ color: '#000', textAlign: 'center', fontWeight: '200', fontSize: 12, marginTop: 15, marginLeft: 15, marginRight: 15 }}> The cooperative movement began in Europe in the 19th century, primarily in Britain and France as a self-help Victoria Island, Lagos</Text>
                         </View>
 
-                        <TouchableOpacity  style={styles.buttonContainer} block iconLeft>
+                        <TouchableOpacity style={styles.buttonContainer} block iconLeft>
                             <Text style={{ color: '#fdfdfd', fontWeight: '700' }}>Edit profile</Text>
                         </TouchableOpacity>
 
@@ -333,12 +345,12 @@ export default class Profile extends React.Component {
         let cat = [];
         const { navigate } = this.props.navigation;
         for (var i = 0; i < categories.length; i++) {
-            let id = categories[i].id ;
+            let id = categories[i].id;
             cat.push(
                 <View style={styles.resultBox}>
 
-                    <TouchableOpacity onPress={()=>  navigate('ServieDetails' , 
-                      { id:id  })}  style={styles.loacationText}>
+                    <TouchableOpacity onPress={() => navigate('ServieDetails',
+                        { id: id })} style={styles.loacationText}>
 
                         <View style={styles.resultDescription}>
                             <View style={styles.resultImage}>
@@ -346,7 +358,8 @@ export default class Profile extends React.Component {
                                     rounded
                                     size="medium"
                                     source={{
-                                        uri: categories[i].image_url, }}
+                                        uri: categories[i].image_url,
+                                    }}
                                 />
                             </View>
                             <View style={styles.resultTextDescription}>
@@ -432,7 +445,6 @@ const styles = StyleSheet.create({
     },
     row: {
         flexDirection: "row",
-
     },
     rowchild: {
         margin: 5,
@@ -537,23 +549,23 @@ const styles = StyleSheet.create({
     },
     nextButtonContainer: {
         backgroundColor: "#749AD1",
-        borderRadius:20,
-        flexDirection:'row',
-    paddingLeft:12,
-    alignItems:'center'
-       
-      
-      },
-      nextButtonText:{
+        borderRadius: 20,
+        flexDirection: 'row',
+        paddingLeft: 12,
+        alignItems: 'center'
+
+
+    },
+    nextButtonText: {
         color: "#fff",
         fontSize: 13,
         marginTop: 5,
         marginRight: 20,
         marginLeft: 20,
-        marginBottom:5,
+        marginBottom: 5,
         fontFamily: "Poppins-Bold",
 
-       
-      }
+
+    }
 
 })

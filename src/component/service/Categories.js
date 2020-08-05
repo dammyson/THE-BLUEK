@@ -7,7 +7,7 @@ import {
     SelectMultipleGroupButton
 } from "react-native-selectmultiple-button";
 import _ from "lodash";
-const URL = require("../server");
+const URL = require("../../component/server");
 import Navbar from '../utilities/Navbar';
 import color from '../utilities/color';
 import {
@@ -17,7 +17,7 @@ import {
 import { getToken } from '../utilities/index';
 
 
-export default class Step3 extends Component {
+export default class CreateService extends Component {
 
     constructor(props) {
         super(props);
@@ -26,10 +26,8 @@ export default class Step3 extends Component {
             description: '',
             location: '',
             multipleSelectedData: [],
+            multipleSelectedDataLimited: [],
             multipleData: [],
-            step1: '',
-            step2: '',
-            name: '',
 
         };
     }
@@ -38,38 +36,8 @@ export default class Step3 extends Component {
 
 
     async componentDidMount() {
-        const { Step1, Step2 } = this.props.route.params;
-        this.setState({
-            step1: Step1,
-            step2: Step2,
-            name: Step1.name
-        })
-
         this.loadCategories();
     }
-
-
-
-    nextStep = () => {
-        const { step1, step2, dataone, multipleSelectedData } = this.state;
-
-        if (this.state.multipleSelectedData.length < 1) {
-            Alert.alert('Validation failed', "All fields are requried", [{ text: 'Okay' }])
-            return
-        }
-
-
-        var cat_id = dataone[this.state.dataone.map(function (e) {
-            return e.name;
-        }).indexOf(multipleSelectedData[0])].id;
-
-
-        this.props.navigation.navigate('Step4', {
-            Step1: step1,
-            Step2: step2,
-            Step3: cat_id,
-        });
-    };
 
     loadCategories = async () => {
 
@@ -112,6 +80,48 @@ export default class Step3 extends Component {
 
 
 
+    async processAddCategory() {
+
+        this.setState({ loading: true })
+        const { data, dataone,description, multipleSelectedData} = this.state
+       var serverarray=[];
+
+        for (let i = 0; i < multipleSelectedData.length; i++) {
+            serverarray.push(
+                dataone[this.state.dataone.map(function(e) { 
+                    return e.name; 
+                }).indexOf(multipleSelectedData[i])].id
+
+            )
+        }
+          fetch(URL.url + '/api/categories/user/add', {
+              method: 'POST', headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  'Authorization': 'Bearer ' + await getToken(),
+              }, body: JSON.stringify({
+                 categories: serverarray,
+                 others: description,
+              }),
+          })
+              .then(res => res.json())
+              .then(res => {
+                this.setState({ loading: false })
+                  if (res.status) {
+                    this.props.navigation.navigate('Profile');
+                  } else {
+                    this.setState({ buttonState: 'error' })
+                      Alert.alert('Registration failed', res.message, [{ text: 'Okay' }])
+                    
+                  }
+              }).catch((error) => {
+                  console.warn(error);
+                  this.setState({ loading: false })
+                  
+              });
+    
+      }
+
     render() {
 
         const { state, goBack } = this.props.navigation;
@@ -131,7 +141,7 @@ export default class Step3 extends Component {
 
         var right = (
             <Right style={{ flex: 1, flexDirection: 'row' }}>
-                <TouchableOpacity onPress={() => this.nextStep()} style={styles.nextButtonContainer} block iconLeft>
+                <TouchableOpacity onPress={()=> this.processAddCategory()} style={styles.nextButtonContainer} block iconLeft>
                     <Text style={styles.nextButtonText}>Next</Text>
                 </TouchableOpacity>
             </Right>
@@ -152,7 +162,7 @@ export default class Step3 extends Component {
 
         return (
             <Container style={{ backgroundColor: '#fff' }}>
-                <Navbar left={left} right={right} title={this.state.name} bg='#fff' />
+                <Navbar left={left} right={right} title='Profile' bg='#fff' />
                 <Content>
                     <View style={styles.backgroundImage}>
                         <View style={{ flex: 1 }}>
@@ -189,6 +199,24 @@ export default class Step3 extends Component {
                                     ))}
                                 </View>
 
+
+                                <View style={styles.inputView}>
+                                    <TextInput
+                                        placeholder="Enter yours"
+                                        placeholderTextColor={color.light_blue}
+                                        returnKeyType="next"
+                                        onSubmitEditing={() => this.decriptionInput.focus()}
+                                        keyboardType='email-address'
+                                        autoCapitalize="none"
+                                        autoCorrect={false}
+                                        inlineImageLeft='ios-call'
+                                        style={{ flex: 1, fontFamily: 'Poppins-Light' }}
+                                        onChangeText={text => this.setState({ description: text })}
+
+                                    />
+
+
+                                </View>
                             </View>
                         </View>
                     </View>
@@ -225,15 +253,17 @@ export default class Step3 extends Component {
 
     _singleTapMultipleSelectedButtons(interest) {
 
-        var instant_array = []
-        instant_array = this.state.multipleSelectedData
-        instant_array.splice(0, instant_array.length);
-        instant_array.push(interest);
+        if (this.state.multipleSelectedData.includes(interest)) {
+            _.remove(this.state.multipleSelectedData, ele => {
+                return ele === interest;
+            });
 
+        } else {
+            this.state.multipleSelectedData.push(interest);
+        }
         this.setState({
-            multipleSelectedData: instant_array
+            multipleSelectedData: this.state.multipleSelectedData
         });
-
     }
 }
 

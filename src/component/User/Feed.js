@@ -1,48 +1,30 @@
 import React from 'react';
-import { StyleSheet, AsyncStorage, Dimensions, Text, ImageBackground, ScrollView, View, TouchableOpacity, Alert } from 'react-native';
-import {
-    Container,
-    Content,
-    Thumbnail,
-    Header,
-    Left,
-    Right,
-    Body,
-    Button
-} from 'native-base';
-
+import { StyleSheet, FlatList, Dimensions, Text, ImageBackground, ScrollView, View, TouchableOpacity, Alert } from 'react-native';
+import {  Toast } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import { Icon, Avatar } from 'react-native-elements';
-import {
-    SkypeIndicator,
-} from 'react-native-indicators';
+import { SkypeIndicator, } from 'react-native-indicators';
 const URL = require("../../component/server");
 import Carousel, { Pagination, ParallaxImage } from 'react-native-snap-carousel';
 
-
+import { getToken } from '../utilities/index';
 
 class Feed extends React.Component {
-    static navigationOptions = {
-        tabBarIcon: ({ tintColor }) => (
-
-            <Icon name="home" type='font-awesome' color={tintColor} />
-
-        )
-    }
-
+ 
     constructor(props) {
         super(props);
-        this.onEventPress = this.onEventPress.bind(this)
         this._renderItem = this._renderItem.bind(this)
 
         this.state = {
             loading: true,
             data: [],
+            data_category: [],
             auth: '',
             dataone: [],
             categories: [],
             slider1ActiveSlide: 0,
-            selected: null
+            selected: null,
+            cat: false
         };
     }
 
@@ -50,28 +32,16 @@ class Feed extends React.Component {
 
 
     componentDidMount() {
-        AsyncStorage.getItem('auth').then((value) => {
-            if (value == '') {
-
-            } else {
-                this.setState({ auth: value })
-            }
-            this.loadServices();
-        })
-
+        this.loadServices();
     }
-    onEventPress() {
-        this.props.navigation.navigate('ServieDetails');
-    }
+   
 
-    loadServices = () => {
-        const { auth } = this.state
-        console.warn(auth);
+    loadServices = async () => {
         this.setState({ loading: true });
         fetch(URL.url + '/api/services', {
             method: 'GET', headers: {
                 Accept: 'application/json',
-                'Authorization': 'Bearer ' + auth,
+                'Authorization': 'Bearer ' + await getToken(),
                 'Content-Type': 'application/json',
             }
         })
@@ -87,7 +57,7 @@ class Feed extends React.Component {
                     data: res.data.services,
                     loading: false,
                     status: res.status,
-                    categories:res.data.categories
+                    categories: res.data.categories
 
                 });
                 this.arrayholder = res.data;
@@ -97,6 +67,88 @@ class Feed extends React.Component {
                 this.setState({ loading: false })
             });
     };
+
+    loadServicesByCategory = async (id) => {
+        this.setState({ loading: true });
+        fetch(URL.url + '/api/services/category/' + id, {
+            method: 'GET', headers: {
+                Accept: 'application/json',
+                'Authorization': 'Bearer ' + await getToken(),
+                'Content-Type': 'application/json',
+            }
+        })
+
+            .then(res => res.json())
+            .then(res => {
+                console.warn(res)
+                if (!res.data) {
+                    Alert.alert('Operation failed', res.message, [{ text: 'Okay' }])
+                    return
+                }
+                this.setState({
+                    data_category: res.data.services,
+                    loading: false,
+
+                });
+            })
+            .catch(error => {
+                alert(error.message);
+                this.setState({ loading: false })
+            });
+    };
+
+
+
+   async likeUnlikeRequest(id, pos){
+       console.warn(id, pos);
+        fetch(URL.url + '/api/services/like/'+ id, {
+            method: 'GET', headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': 'Bearer ' +  await getToken(),
+            }
+        })
+            .then(res => res.json())
+            .then(res => {
+                console.warn(res);
+                if (res.status) {
+                    if(pos){
+                        Toast.show({
+                            text: 'Event removed from favorite !',
+                            position: 'bottom',
+                            type: 'success',
+                            buttonText: 'Dismiss',
+                            duration: 2000
+                        });
+                    }else{
+                        Toast.show({
+                            text: 'Event Added to favorite !',
+                            position: 'bottom',
+                            type: 'success',
+                            buttonText: 'Dismiss',
+                            duration: 2000
+                        });
+                    }
+                   
+                } else {
+
+                }
+            })
+            .catch(error => {
+                console.warn(error);
+
+            });
+
+    
+    }
+
+
+    async onCategorySelected(arg) {
+        this.setState({ loading: true, cat: true })
+        this.loadServicesByCategory(arg);
+    }
+
+
     render() {
 
         if (this.state.loading) {
@@ -116,7 +168,7 @@ class Feed extends React.Component {
                 <View style={{ height: 5 }}></View>
                 <View style={styles.header}>
 
-                    <View style={{ flexDirection: 'row' , marginBottom: 5}}>
+                    <View style={{ flexDirection: 'row', marginBottom: 5 }}>
                         <Text style={{ color: '#000', flex: 1, fontWeight: '700', fontSize: 12, marginLeft: 10, marginTop: 10 }}>categories</Text>
 
                         <TouchableOpacity style={styles.notificationBox}>
@@ -136,12 +188,7 @@ class Feed extends React.Component {
                         {this.renderCategory()}
 
                     </ScrollView>
-
-
-
                 </View>
-
-
                 <View style={styles.loacationBox}>
 
                     <View style={styles.loacationText}>
@@ -158,20 +205,32 @@ class Feed extends React.Component {
 
 
                 <View>
+                    {this.state.cat ?
+                        <FlatList
+                            style={{ paddingBottom: 5 }}
+                            data={this.state.data_category}
+                            renderItem={this._renderItemTwo}
+                            keyExtractor={item => item.id}
 
-                    <Carousel
-                        ref={(c) => { this._carousel = c; }}
-                        data={this.state.data}
-                        renderItem={this._renderItem}
-                        sliderWidth={Dimensions.get('window').width}
-                        itemWidth={Dimensions.get('window').width / 1.3}
-                        hasParallaxImages={true}
-                        layout={'default'}
+                        />
+                        :
+                        <Carousel
+                            ref={(c) => { this._carousel = c; }}
+                            data={this.state.data}
+                            renderItem={this._renderItem}
+                            sliderWidth={Dimensions.get('window').width}
+                            itemWidth={Dimensions.get('window').width / 1.3}
+                            hasParallaxImages={true}
+                            layout={'default'}
 
 
-                    />
+                        />
+                    }
+
 
                 </View>
+
+
 
 
             </View>
@@ -186,15 +245,15 @@ class Feed extends React.Component {
     _renderItem({ item, index }, parallaxProps) {
         const { navigate } = this.props.navigation;
         return (
-            <TouchableOpacity onPress={()=>  navigate('ServieDetails' , 
-            {
-              id: item.id,
-            })} 
-            style={{ width: Dimensions.get('window').width - 100, height: Dimensions.get('window').height / 1.8, }}>
+            <TouchableOpacity onPress={() => navigate('ServieDetails',
+                {
+                    id: item.id,
+                })}
+                style={{ width: Dimensions.get('window').width - 100, height: Dimensions.get('window').height / 1.8, }}>
 
                 <ImageBackground
-                    style={{ flex: 1, borderRadius: 20, marginTop: 0, backgroundColor:'#9dc5fe' }}
-                    source={item.image_url != null || item.image_url != ''  ? { uri: item.image_url } :  { uri:"https://ipsumimage.appspot.com/640x360"}}
+                    style={{ flex: 1, borderRadius: 20, marginTop: 0, backgroundColor: '#9dc5fe' }}
+                    source={item.image_url != null || item.image_url != '' ? { uri: item.image_url } : { uri: "https://ipsumimage.appspot.com/640x360" }}
                     imageStyle={{ overflow: 'hidden', position: "absolute", borderRadius: 20, }}
                 >
                     <View style={styles.shareConatainer}>
@@ -212,7 +271,7 @@ class Feed extends React.Component {
                         <View style={{ flex: 1 }}>
 
                         </View>
-                        <TouchableOpacity style={styles.circle}>
+                        <TouchableOpacity  onPress={()=>this.likeUnlikeRequest(item.id, index) } style={styles.circle}>
 
                             <Icon
                                 size={16}
@@ -286,14 +345,87 @@ class Feed extends React.Component {
         );
     }
 
+    _renderItemTwo({ item, index }, parallaxProps) {
+        return (
+            <TouchableOpacity onPress={() => navigate('ServieDetails',
+                {
+                    id: item.id,
+                })}
+                style={{ height: Dimensions.get('window').height / 1.8, marginLeft: 20, marginRight: 20, marginBottom: 20 }}>
+
+
+                <View style={{ backgroundColor: '#fff', paddingTop: 1, paddingBottom: 1 }}>
+
+
+                    <View style={styles.resultActiom}>
+                        <View style={styles.item}>
+                            <Avatar
+                                rounded
+                                size="medium"
+                                overlayContainerStyle={{ backgroundColor: 'white' }}
+                                source={{ uri: "https://ipsumimage.appspot.com/640x360" }}
+                            />
+                        </View>
+                        <View style={{ flex: 1, marginLeft: 1, }}>
+                            <Text style={{ fontFamily: 'Poppins-Bold', color: '#000', fontWeight: '700', fontSize: 16, marginLeft: 10 }}>{item.short_brief} </Text>
+                        </View>
+
+                    </View>
+
+                </View>
+
+                <ImageBackground
+                    style={{ flex: 1, marginTop: 0, backgroundColor: '#9dc5fe' }}
+                    source={item.image_url != null || item.image_url != '' ? { uri: item.image_url } : { uri: "https://ipsumimage.appspot.com/640x360" }}
+                    imageStyle={{ overflow: 'hidden', position: "absolute", }}
+                >
+
+
+                    <View style={{ flex: 1, }}>
+                    </View>
+                </ImageBackground>
+                <View style={[styles.details,]} >
+                    <Text style={{ fontFamily: 'Poppins-Light', color: '#333333', fontWeight: '900', fontSize: 14, margin: 10, marginLeft: 20, }}>{item.short_brief} ...</Text>
+                </View>
+
+
+                <View style={styles.buttonsContainer}>
+                    <TouchableOpacity onPress={() => this.processRegistration()} block iconLeft>
+                        <Icon
+                            size={28}
+                            active
+                            name="phone"
+                            type='font-awesome'
+                            color='#2E2A79'
+
+                        />
+
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.processRegistration()} style={{ marginLeft: 10 }} block iconLeft>
+                        <Icon
+                            size={28}
+                            active
+                            name="commenting"
+                            type='font-awesome'
+                            color='#2E2A79'
+
+                        />
+                    </TouchableOpacity>
+                </View>
+
+
+            </TouchableOpacity>
+        );
+    }
+
     renderCategory() {
-         var array = this.state.categories;
-         
+        var array = this.state.categories;
+        const { navigate } = this.props.navigation;
         let cat = [];
         for (var i = 0; i < array.length; i++) {
+            var id = array[i].id
             cat.push(
-
-                <View style={{ alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => this.onCategorySelected(id)} style={{ alignItems: 'center' }}>
 
                     <Avatar
                         rounded
@@ -306,7 +438,7 @@ class Feed extends React.Component {
                     />
                     <Text style={{ color: '#000', fontWeight: '200', fontSize: 12, marginLeft: 15 }}>{array[i].name}</Text>
 
-                </View>
+                </TouchableOpacity>
             );
         }
         return cat;

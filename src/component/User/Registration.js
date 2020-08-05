@@ -84,19 +84,10 @@ export default class Registration extends Component {
           return
         }
       }else{
-        
         Alert.alert('Validation failed', 'Password must be morethan 5 character', [{ text: 'Okay' }]);
           return
       }
-
-      
-
-
-    }
-
-
-
-    
+    } 
   }
 
 
@@ -128,7 +119,7 @@ export default class Registration extends Component {
                   </View>
                     <Text style={styles.subTitle}> Enter email and password</Text>
 
-                     <TextInput
+                    <TextInput
                     placeholder="Email"
                     placeholderTextColor='#000'
                     returnKeyType="next"
@@ -162,7 +153,7 @@ export default class Registration extends Component {
                     placeholderTextColor='#000'
                     returnKeyType="next"
                     onSubmitEditing={() =>this.login()}
-                    keyboardType="numeric"
+                    keyboardType="email-address"
                     autoCapitalize="none"
                     autoCorrect={false}
                     style={styles.input}
