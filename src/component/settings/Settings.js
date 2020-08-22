@@ -175,7 +175,6 @@ export default class Settings extends Component {
 
     return (
       <Container style={{ backgroundColor: '#f5f5f5' }}>
-        <Navbar left={left} right={right} title='Profile' bg='#fff' />
         <Content>
           <View style={styles.backgroundImage}>
 

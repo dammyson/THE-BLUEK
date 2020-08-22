@@ -167,8 +167,7 @@ export default class Otp extends Component {
                         <OTPInputView
                             style={{width: '80%', height: 60}}
                             pinCount={6}
-                            // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-                            // onCodeChanged = {code => { this.setState({code})}}
+
                             autoFocusOnLoad
                             codeInputFieldStyle={styles.underlineStyleBase}
                             codeInputHighlightStyle={styles.underlineStyleHighLighted}
@@ -304,27 +303,28 @@ const styles = StyleSheet.create({
   },
 
 
-  borderStyleBase: {
-    width: 30,
-    height: 45
-  },
+
 
   borderStyleHighLighted: {
-    borderColor: "#03DAC6",
+    borderColor: "#000",
   },
 
   underlineStyleBase: {
-    width: 30,
-    height: 30,
+    width: 35,
+    height: 35,
     borderWidth: 1,
+    justifyContent:'center',
+    alignContent:'center',
     margin:3,
-    borderRadius: 15,
+    borderRadius: 20,
     backgroundColor:'#f1f1f1',
+    borderColor: "white",
+    color:'black'
    
   },
 
   underlineStyleHighLighted: {
-    borderColor: "#03DAC6",
+    borderColor: "#000",
   },
   otpContainer:{
     justifyContent: 'center',

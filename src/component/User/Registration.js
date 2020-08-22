@@ -137,7 +137,8 @@ export default class Registration extends Component {
                     placeholderTextColor='#000'
                     returnKeyType="next"
                     onSubmitEditing={() => this.passwordConfirmInput.focus()}
-                    keyboardType="email-address"
+                    keyboardType='password'
+                      secureTextEntry
                     autoCapitalize="none"
                     autoCorrect={false}
                     style={styles.input}

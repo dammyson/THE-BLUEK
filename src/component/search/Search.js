@@ -45,7 +45,7 @@ export default class Feed extends Component {
                                     placeholderTextColor='#000'
                                     returnKeyType="next"
                                     onSubmitEditing={() => this.passwordInput.focus()}
-                                    keyboardType="numeric"
+                                    keyboardType="default"
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     style={styles.menu}

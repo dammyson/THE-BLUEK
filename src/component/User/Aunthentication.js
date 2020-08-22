@@ -215,7 +215,8 @@ export default class Authentication extends Component {
                       placeholderTextColor='#000'
                       returnKeyType="next"
                       onSubmitEditing={() => this.passwordInput.focus()}
-                      keyboardType="email-address"
+                      keyboardType='password'
+                      secureTextEntry
                       autoCapitalize="none"
                       autoCorrect={false}
                       style={styles.passinput}

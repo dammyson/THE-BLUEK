@@ -62,7 +62,7 @@ export default class CreateService extends Component {
 
     var right = (
       <Right style={{ flex: 1, flexDirection: 'row' }}>
-        <TouchableOpacity onPress={this.nextStep} style={styles.nextButtonContainer} block iconLeft>
+        <TouchableOpacity onPress={this.nextStep} style={styles.nextButtonContainer}>
           <Text style={styles.nextButtonText}>Next</Text>
         </TouchableOpacity>
       </Right>
@@ -348,16 +348,19 @@ const styles = StyleSheet.create({
   nextButtonContainer: {
     backgroundColor: "#749AD1",
     borderRadius: 20,
+    justifyContent:'center',
+    alignContent:'center',
+    height:25
 
 
 
   },
   nextButtonText: {
     color: "#fff",
-    fontSize: 13,
+    fontSize: 11,
     marginTop: 5,
-    marginRight: 20,
-    marginLeft: 20,
+    marginRight: 15,
+    marginLeft: 15,
     marginBottom: 5,
     fontFamily: "Poppins-Bold",
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Dimensions, Text, ScrollView, AsyncStorage, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Dimensions, Text, Alert, ScrollView, AsyncStorage, View, TouchableOpacity } from 'react-native';
 import {
     Icon,
     Container,
@@ -95,6 +95,8 @@ export default class Profile extends React.Component {
                 this.setState({ loading: false });
                 if (res.status) {
                     this.props.navigation.navigate('CreateService')
+                }else{
+                    Alert.alert('Operation Failed', res.message, [{ text: 'Okay' }])
                 }
             })
             .catch(error => {
@@ -253,7 +255,7 @@ export default class Profile extends React.Component {
                                 />
 
                                 <Text style={styles.performance}>{bio.work_experiences}</Text>
-                                <Text style={styles.performanceTitle}>Experiances</Text>
+                                <Text style={styles.performanceTitle}>Experiences</Text>
 
 
                             </View>
@@ -264,7 +266,7 @@ export default class Profile extends React.Component {
                             <Text style={{ color: '#000', textAlign: 'center', fontWeight: '200', fontSize: 12, marginTop: 15, marginLeft: 15, marginRight: 15 }}> The cooperative movement began in Europe in the 19th century, primarily in Britain and France as a self-help Victoria Island, Lagos</Text>
                         </View>
 
-                        <TouchableOpacity style={styles.buttonContainer} block iconLeft>
+                        <TouchableOpacity onPress={()=>  this.props.navigation.navigate('Settings')} style={styles.buttonContainer} block iconLeft>
                             <Text style={{ color: '#fdfdfd', fontWeight: '700' }}>Edit profile</Text>
                         </TouchableOpacity>
 

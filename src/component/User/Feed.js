@@ -316,7 +316,7 @@ class Feed extends React.Component {
 
 
                 <View style={styles.buttonsContainer}>
-                    <TouchableOpacity onPress={() => this.processRegistration()} style={styles.actionButtonContainer} block iconLeft>
+                    <TouchableOpacity  style={styles.actionButtonContainer} block iconLeft>
                         <Icon
                             size={18}
                             active
@@ -327,7 +327,7 @@ class Feed extends React.Component {
                         />
                         <Text style={{ color: '#fdfdfd', fontWeight: '700', marginLeft: 10 }}>Call</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.processRegistration()} style={styles.actionButtonContainer} block iconLeft>
+                    <TouchableOpacity  style={styles.actionButtonContainer} block iconLeft>
                         <Icon
                             size={18}
                             active
