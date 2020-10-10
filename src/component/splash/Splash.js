@@ -2,10 +2,23 @@
 import React, {Component} from 'react';
 import {ImageBackground, StyleSheet, Text, View, Image, Dimensions, AsyncStorage} from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import firebase from 'react-native-firebase'
 
 
 export default class Splash extends Component{
+  constructor(props) 
+  {
+      super(props);
+      this.emailRef = React.createRef();
+      this.state = {
+        token: "", 
+ }
+
+  }
+
+
   async componentDidMount(){
+    this.checkPermission(); 
     setTimeout(() => {
      this.initPage();
     // this.props.navigation.navigate('IntroSlider');
@@ -26,6 +39,45 @@ export default class Splash extends Component{
     })
    
   }
+
+
+
+     //1
+async checkPermission() {
+  const enabled = await firebase.messaging().hasPermission();
+  if (enabled) {
+      this.getToken();
+  } else {
+      this.requestPermission();
+  }
+ // firebase.messaging().subscribeToTopic("global");
+}
+async getToken() {
+  let fcmToken = await AsyncStorage.getItem('fcmToken');
+  this.setState({token: fcmToken})
+  if (!fcmToken) {
+      fcmToken = await firebase.messaging().getToken();
+      console.warn(fcmToken);
+      if (fcmToken) {
+          // user has a device token
+          await AsyncStorage.setItem('fcmToken', fcmToken);
+          this.setState({token: fcmToken})
+      }
+  }
+}
+
+  //2
+async requestPermission() {
+  try {
+      await firebase.messaging().requestPermission();
+      // User has authorised
+      this.getToken();
+  } catch (error) {
+      // User has rejected permissions
+      console.log('permission rejected');
+  }
+}
+
 
   render() {
     return (

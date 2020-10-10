@@ -1,16 +1,17 @@
 import React from 'react';
 import { StyleSheet, FlatList, Dimensions, Text, ImageBackground, ScrollView, View, TouchableOpacity, Alert } from 'react-native';
-import {  Toast } from 'native-base';
+import { Toast } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import { Icon, Avatar } from 'react-native-elements';
 import { SkypeIndicator, } from 'react-native-indicators';
 const URL = require("../../component/server");
 import Carousel, { Pagination, ParallaxImage } from 'react-native-snap-carousel';
+import LinearGradient from 'react-native-linear-gradient';
 
 import { getToken } from '../utilities/index';
 
 class Feed extends React.Component {
- 
+
     constructor(props) {
         super(props);
         this._renderItem = this._renderItem.bind(this)
@@ -34,7 +35,7 @@ class Feed extends React.Component {
     componentDidMount() {
         this.loadServices();
     }
-   
+
 
     loadServices = async () => {
         this.setState({ loading: true });
@@ -99,20 +100,20 @@ class Feed extends React.Component {
 
 
 
-   async likeUnlikeRequest(id, pos){
-       console.warn(id, pos);
-        fetch(URL.url + '/api/services/like/'+ id, {
+    async likeUnlikeRequest(id, pos) {
+        console.warn(id, pos);
+        fetch(URL.url + '/api/services/like/' + id, {
             method: 'GET', headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                'Authorization': 'Bearer ' +  await getToken(),
+                'Authorization': 'Bearer ' + await getToken(),
             }
         })
             .then(res => res.json())
             .then(res => {
                 console.warn(res);
                 if (res.status) {
-                    if(pos){
+                    if (pos) {
                         Toast.show({
                             text: 'Event removed from favorite !',
                             position: 'bottom',
@@ -120,7 +121,7 @@ class Feed extends React.Component {
                             buttonText: 'Dismiss',
                             duration: 2000
                         });
-                    }else{
+                    } else {
                         Toast.show({
                             text: 'Event Added to favorite !',
                             position: 'bottom',
@@ -129,7 +130,7 @@ class Feed extends React.Component {
                             duration: 2000
                         });
                     }
-                   
+
                 } else {
 
                 }
@@ -139,7 +140,7 @@ class Feed extends React.Component {
 
             });
 
-    
+
     }
 
 
@@ -271,7 +272,7 @@ class Feed extends React.Component {
                         <View style={{ flex: 1 }}>
 
                         </View>
-                        <TouchableOpacity  onPress={()=>this.likeUnlikeRequest(item.id, index) } style={styles.circle}>
+                        <TouchableOpacity onPress={() => this.likeUnlikeRequest(item.id, index)} style={styles.circle}>
 
                             <Icon
                                 size={16}
@@ -316,28 +317,9 @@ class Feed extends React.Component {
 
 
                 <View style={styles.buttonsContainer}>
-                    <TouchableOpacity  style={styles.actionButtonContainer} block iconLeft>
-                        <Icon
-                            size={18}
-                            active
-                            name="phone"
-                            type='font-awesome'
-                            color='#9dc5fe'
-
-                        />
-                        <Text style={{ color: '#fdfdfd', fontWeight: '700', marginLeft: 10 }}>Call</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity  style={styles.actionButtonContainer} block iconLeft>
-                        <Icon
-                            size={18}
-                            active
-                            name="commenting"
-                            type='font-awesome'
-                            color='#9dc5fe'
-
-                        />
-                        <Text style={{ color: '#fdfdfd', fontWeight: '700', marginLeft: 10 }}>Message</Text>
-                    </TouchableOpacity>
+                    <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}  colors={['#749AD1', '#4b47b7']}  style={styles.actionButtonContainer}>
+                    <Text style={{ color: '#fdfdfd', fontWeight: '700', marginLeft: 10 }}>Request</Text>
+                    </LinearGradient>
                 </View>
 
 

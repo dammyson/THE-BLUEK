@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "827746702907",
+    "firebase_url": "https://bluekola-5fa77.firebaseio.com",
+    "project_id": "bluekola-5fa77",
+    "storage_bucket": "bluekola-5fa77.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827746702907:android:cdf257599d7d1d9564ee1e",
+        "android_client_info": {
+          "package_name": "com.bluekola"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "827746702907-bjl4najo7th02301i7musec41lfnuubh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2lousV4BLcLQdKVLDcMdglHBddDDl7fY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "827746702907-bjl4najo7th02301i7musec41lfnuubh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
