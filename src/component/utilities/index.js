@@ -4,6 +4,9 @@ import { AsyncStorage } from 'react-native';
 export const getToken = async () => {
   return AsyncStorage.getItem('auth')
 };
+export const getFmc = async () => {
+  return AsyncStorage.getItem('blfcmToken')
+};
 
 export const processResponse = (response) =>  {
   const statusCode = response.status;

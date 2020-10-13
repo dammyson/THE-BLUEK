@@ -7,7 +7,7 @@ export default class App extends Component{
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="dark-content" hidden={false} backgroundColor="transparent" />
+        <StatusBar barStyle="dark-content" hidden={false} backgroundColor="#fff" />
         <Main/>
       </SafeAreaView>
     

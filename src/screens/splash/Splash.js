@@ -20,8 +20,8 @@ export default class Splash extends Component{
   async componentDidMount(){
     this.checkPermission(); 
     setTimeout(() => {
-     this.initPage();
-    // this.props.navigation.navigate('IntroSlider');
+    // this.initPage();
+     this.props.navigation.navigate('Authentication');
     }, 1000);
    }
 
@@ -53,14 +53,15 @@ async checkPermission() {
  // firebase.messaging().subscribeToTopic("global");
 }
 async getToken() {
-  let fcmToken = await AsyncStorage.getItem('fcmToken');
+  let fcmToken = await AsyncStorage.getItem('blfcmToken');
+  console.warn(fcmToken);
   this.setState({token: fcmToken})
   if (!fcmToken) {
       fcmToken = await firebase.messaging().getToken();
       console.warn(fcmToken);
       if (fcmToken) {
           // user has a device token
-          await AsyncStorage.setItem('fcmToken', fcmToken);
+          await AsyncStorage.setItem('blfcmToken', fcmToken);
           this.setState({token: fcmToken})
       }
   }

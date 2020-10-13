@@ -30,18 +30,22 @@ export default class Username extends Component {
       userDetails: {},
       username: '',
       name: '',
-      buttonState: 'idle'
+      buttonState: 'idle',
+      token: ''
     };
 
   }
 
 
 
-  componentDidMount() {
+ async componentDidMount() {
+
     const { userDetails  } = this.props.route.params;
     this.setState({
       userDetails: userDetails
     })
+
+    this.setState({ token: await getFmc() })
 
     }
 
@@ -58,7 +62,7 @@ export default class Username extends Component {
 
 
   processRegistration() {
-    const { username, name,userDetails} = this.state
+    const { username,token, name,userDetails} = this.state
   console.warn(username, name,userDetails)
     if (username == "" || name == "") {
       Alert.alert('Validation failed', ' Fields cannot be empty', [{ text: 'Okay' }])
@@ -75,7 +79,8 @@ export default class Username extends Component {
         email: userDetails.email,
         password: userDetails.password,
         phone:userDetails.phone,
-        username:username
+        username:username,
+        mobile_token: token
       }),
     })
       .then(res => res.json())

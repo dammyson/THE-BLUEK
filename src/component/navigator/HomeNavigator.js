@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Feed from '../User/Feed';
-import ServieDetails from '../service/ServieDetails';
+import Feed from '../../screens/User/Feed';
+import ServieDetails from '../../screens/service/ServieDetails';
 
 class AppStack extends Component {
 

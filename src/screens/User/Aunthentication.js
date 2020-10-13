@@ -22,6 +22,7 @@ import Swiper from 'react-native-swiper';
 
 const bgone = require('../../assets/signupbgone.png');
 const bgtwo = require('../../assets/signupbgtwo.png');
+import { getFmc } from '../utilities/index';
 
 const logo = require('../../assets/logo.png');
 import { Actions } from 'react-native-router-flux';
@@ -29,7 +30,9 @@ import { Actions } from 'react-native-router-flux';
 export default class Authentication extends Component {
 
 
-  componentDidMount() {
+ async componentDidMount() {
+
+this.setState({ token: await getFmc() })
     AsyncStorage.setItem('rem', "login");
 
     AsyncStorage.getItem('email').then((value) => {
@@ -56,7 +59,8 @@ export default class Authentication extends Component {
       regButtonState: 'idle',
       loginButtonState: 'idle',
       username: '',
-      password: ''
+      password: '',
+      token:'',
     };
 
   }
@@ -128,7 +132,7 @@ export default class Authentication extends Component {
 
   processLogin() {
 
-    const { username, password } = this.state
+    const { username, password, token } = this.state
 
     if (username == "" || password == "") {
       Alert.alert('Validation failed', 'Userdetails field cannot be empty', [{ text: 'Okay' }])
@@ -144,7 +148,8 @@ export default class Authentication extends Component {
         'Content-Type': 'application/json',
       }, body: JSON.stringify({
         username: username,
-        password: password
+        password: password,
+        mobile_token: token
       }),
     })
       .then(res => res.json())

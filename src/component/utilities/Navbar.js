@@ -29,7 +29,7 @@ const styles={
     alignItems: 'flex-start',
   },
   title: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#333333',
     fontFamily: "Poppins-SemiBold",
   }

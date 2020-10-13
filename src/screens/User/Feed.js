@@ -9,15 +9,16 @@ import Carousel, { Pagination, ParallaxImage } from 'react-native-snap-carousel'
 import LinearGradient from 'react-native-linear-gradient';
 
 import { getToken } from '../utilities/index';
+import Notification from '../view/Notification';
 
 class Feed extends React.Component {
 
     constructor(props) {
         super(props);
         this._renderItem = this._renderItem.bind(this)
-
         this.state = {
             loading: true,
+            show_notification:false,
             data: [],
             data_category: [],
             auth: '',
@@ -144,6 +145,43 @@ class Feed extends React.Component {
     }
 
 
+
+    async requestProcess(id) {
+        this.setState({ loading: true });
+        fetch(URL.url + '/api/request/send/' + id, {
+            method: 'GET', headers: {
+                Accept: 'application/json',
+                'Authorization': 'Bearer ' + await getToken(),
+                'Content-Type': 'application/json',
+            }
+        })
+
+            .then(res => res.json())
+            .then(res => {
+                console.warn(res)
+                this.setState({ loading: false })
+                if (res.status) {
+                    Toast.show({
+                        text: 'Request sent!',
+                        position: 'bottom',
+                        type: 'success',
+                        buttonText: 'Dismiss',
+                        duration: 2500,
+                        buttonText: "Okay",
+                        buttonTextStyle: { color: "#008000" },
+                        buttonStyle: { backgroundColor: "#5cb85c" }
+                    });
+                } else {
+                 
+                }
+            })
+            .catch(error => {
+                alert(error.message);
+                this.setState({ loading: false })
+            });
+    }
+
+
     async onCategorySelected(arg) {
         this.setState({ loading: true, cat: true })
         this.loadServicesByCategory(arg);
@@ -166,13 +204,13 @@ class Feed extends React.Component {
 
         return (
             <View style={styles.container}>
-                <View style={{ height: 5 }}></View>
+                <View style={{ height: 5, backgroundColor: '#fff' }}></View>
                 <View style={styles.header}>
 
                     <View style={{ flexDirection: 'row', marginBottom: 5 }}>
                         <Text style={{ color: '#000', flex: 1, fontWeight: '700', fontSize: 12, marginLeft: 10, marginTop: 10 }}>categories</Text>
 
-                        <TouchableOpacity style={styles.notificationBox}>
+                        <TouchableOpacity onPress={() => this.setState({ show_notification: true })} style={styles.notificationBox}>
 
                             <Icon
                                 size={16}
@@ -233,97 +271,104 @@ class Feed extends React.Component {
 
 
 
-
+                {this.state.show_notification ? this.renderNotification() : null}
             </View>
 
         );
     }
 
-
+renderNotification(){
+    return(
+    <Notification
+    onClose={() => this.setState({ show_notification: false })} />
+        )
+}
     _pressSeeAllProducts() {
         Actions.home();
     }
     _renderItem({ item, index }, parallaxProps) {
         const { navigate } = this.props.navigation;
         return (
-            <TouchableOpacity onPress={() => navigate('ServieDetails',
-                {
-                    id: item.id,
-                })}
-                style={{ width: Dimensions.get('window').width - 100, height: Dimensions.get('window').height / 1.8, }}>
+            <View style={{ width: Dimensions.get('window').width - 100, height: Dimensions.get('window').height / 1.8, }}>
 
                 <ImageBackground
                     style={{ flex: 1, borderRadius: 20, marginTop: 0, backgroundColor: '#9dc5fe' }}
                     source={item.image_url != null || item.image_url != '' ? { uri: item.image_url } : { uri: "https://ipsumimage.appspot.com/640x360" }}
                     imageStyle={{ overflow: 'hidden', position: "absolute", borderRadius: 20, }}
                 >
-                    <View style={styles.shareConatainer}>
-                        <TouchableOpacity style={styles.circle}>
+                    <TouchableOpacity onPress={() => navigate('ServieDetails',
+                        {
+                            id: item.id,
+                        })}
+                        style={{ flex: 1 }}>
 
-                            <Icon
-                                size={18}
-                                active
-                                name="share-alt"
-                                type='font-awesome'
-                                color='#394fa1'
+                        <View style={styles.shareConatainer}>
+                            <TouchableOpacity style={styles.circle}>
 
-                            />
-                        </TouchableOpacity>
-                        <View style={{ flex: 1 }}>
+                                <Icon
+                                    size={18}
+                                    active
+                                    name="share-alt"
+                                    type='font-awesome'
+                                    color='#394fa1'
+
+                                />
+                            </TouchableOpacity>
+                            <View style={{ flex: 1 }}>
+
+                            </View>
+                            <TouchableOpacity onPress={() => this.likeUnlikeRequest(item.id, index)} style={styles.circle}>
+
+                                <Icon
+                                    size={16}
+                                    active
+                                    name="star"
+                                    type='antdesign'
+                                    color='#394fa1'
+
+                                />
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={{ flex: 1, }}>
 
                         </View>
-                        <TouchableOpacity onPress={() => this.likeUnlikeRequest(item.id, index)} style={styles.circle}>
 
-                            <Icon
-                                size={16}
-                                active
-                                name="star"
-                                type='antdesign'
-                                color='#394fa1'
+                        <View style={[styles.details,]} >
 
-                            />
-                        </TouchableOpacity>
-                    </View>
+                            <Text style={{ color: '#FFF', fontWeight: '900', fontSize: 20, margin: 10, marginLeft: 20, }}>{item.short_brief}</Text>
 
-                    <View style={{ flex: 1, }}>
+                        </View>
 
-                    </View>
-
-                    <View style={[styles.details,]} >
-
-                        <Text style={{ color: '#FFF', fontWeight: '900', fontSize: 20, margin: 10, marginLeft: 20, }}>{item.short_brief}</Text>
-
-                    </View>
-
-                    <View style={{ backgroundColor: '#fff', paddingTop: 1, paddingBottom: 1, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
+                        <View style={{ backgroundColor: '#fff', paddingTop: 1, paddingBottom: 1, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
 
 
-                        <View style={styles.resultActiom}>
-                            <View style={{ flex: 1, marginLeft: 10, }}>
-                                <Text style={{ color: '#000', fontWeight: '700', fontSize: 16, marginLeft: 10 }}>{item.short_brief} </Text>
+                            <View style={styles.resultActiom}>
+                                <View style={{ flex: 1, marginLeft: 10, }}>
+                                    <Text style={{ color: '#000', fontWeight: '700', fontSize: 16, marginLeft: 10 }}>{item.short_brief} </Text>
+                                </View>
+
+                            </View>
+
+
+                            <View style={{ marginLeft: 20, marginBottom: 10 }}>
+                                <Text style={{ color: '#000', textAlign: 'left', fontWeight: '200', fontSize: 12, }}> {item.description}</Text>
                             </View>
 
                         </View>
 
-
-                        <View style={{ marginLeft: 20, marginBottom: 10 }}>
-                            <Text style={{ color: '#000', textAlign: 'left', fontWeight: '200', fontSize: 12, }}> {item.description}</Text>
-                        </View>
-
-                    </View>
-
-
+                    </TouchableOpacity>
                 </ImageBackground>
 
 
-                <View style={styles.buttonsContainer}>
-                    <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}  colors={['#749AD1', '#4b47b7']}  style={styles.actionButtonContainer}>
-                    <Text style={{ color: '#fdfdfd', fontWeight: '700', marginLeft: 10 }}>Request</Text>
+                <TouchableOpacity onPress={() => this.requestProcess(item.id,)} style={styles.buttonsContainer}>
+                    <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={['#749AD1', '#4b47b7']} style={styles.actionButtonContainer}>
+                        <Text style={{ color: '#fdfdfd', fontWeight: '700', marginLeft: 10 }}>Request</Text>
                     </LinearGradient>
-                </View>
+                </TouchableOpacity>
 
 
-            </TouchableOpacity>
+            </View>
         );
     }
 
@@ -540,7 +585,6 @@ const styles = StyleSheet.create({
     buttonsContainer: {
         flexDirection: 'row',
     },
-
     actionButtonContainer: {
         marginTop: 12,
         backgroundColor: "#17153d",

@@ -3,19 +3,19 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 
-import Splash from '../../component/splash/Splash';
-import IntroSlider from '../splash/IntroSlider';
-import Authentication from '../User/Aunthentication';
-import Registration from '../User/Registration';
-import Otp from '../User/Otp';
-import Username from '../User/Username';
-import ForgotPassword from '../password/ForgotPassword';
+import Splash from '../../screens/splash/Splash';
+import IntroSlider from '../../screens/splash/IntroSlider';
+import Authentication from '../../screens/User/Aunthentication';
+import Registration from '../../screens/User/Registration';
+import Otp from '../../screens/User/Otp';
+import Username from '../../screens/User/Username';
+import ForgotPassword from '../../screens/password/ForgotPassword';
 
-import Home from '../User/Home';
-import Create from '../service/Create';
-import Profile from '../User/Profile';
-import Categories from '../service/Categories';
-import Settings from '../settings/Settings';
+import Home from '../../screens/User/Home';
+import Create from '../../screens/service/Create';
+import Profile from '../../screens/User/Profile';
+import Categories from '../../screens/service/Categories';
+import Settings from '../../screens/settings/Settings';
 
 
 
