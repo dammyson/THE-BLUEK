@@ -11,7 +11,7 @@ import {
  
 } from "native-base";
 import {  Icon} from 'react-native-elements'
-const URL = require("../server");
+const URL = require("../../component/server");
 import {
   SkypeIndicator,
 } from 'react-native-indicators';

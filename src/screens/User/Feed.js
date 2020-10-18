@@ -8,8 +8,8 @@ const URL = require("../../component/server");
 import Carousel, { Pagination, ParallaxImage } from 'react-native-snap-carousel';
 import LinearGradient from 'react-native-linear-gradient';
 
-import { getToken } from '../utilities/index';
-import Notification from '../view/Notification';
+import { getToken } from '../../component/utilities/index';
+import Notification from '../../component/view/Notification';
 
 class Feed extends React.Component {
 

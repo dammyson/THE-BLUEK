@@ -3,10 +3,10 @@ import { View, Alert, StyleSheet, AsyncStorage, Dimensions, TextInput, Touchable
 import { Container, Content, Text, Button, Left, Right, Body, Title, List, Item, Thumbnail, Grid, Col } from 'native-base';
 import { Card, Icon, Avatar } from 'react-native-elements'
 import { SkypeIndicator, } from 'react-native-indicators';
-import { getToken } from '../utilities/index';
+import { getToken } from '../../component/utilities/index';
 const URL = require("../../component/server");
-import Navbar from '../utilities/Navbar';
-import color from '../utilities/color';
+import Navbar from '../../component/utilities/Navbar';
+import color from '../../component/utilities/color';
 
 
 export default class Settings extends Component {

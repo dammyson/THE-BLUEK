@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { View, Alert, StyleSheet, NativeModules, Image, AsyncStorage, Dimensions, ImageBackground, TextInput, TouchableOpacity } from "react-native";
 import { Container, Content, Text, Button, Left, Right, Toast, Title, List, Item, Thumbnail, Grid, Col } from 'native-base';
 import { Card, Icon, SocialIcon } from 'react-native-elements'
-const URL = require("../server");
+const URL = require("../../component/server");
 var ImagePicker = NativeModules.ImageCropPicker;
-import Navbar from '../utilities/Navbar';
-import color from '../utilities/color';
+import Navbar from '../../component/utilities/Navbar';
+import color from '../../component/utilities/color';
 
 import {
   SkypeIndicator,

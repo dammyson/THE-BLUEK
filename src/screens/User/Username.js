@@ -11,7 +11,7 @@ import {
  
 } from "native-base";
 import {  Icon} from 'react-native-elements'
-const URL = require("../server");
+const URL = require("../../component/server");
 import {
   SkypeIndicator,
 } from 'react-native-indicators';
@@ -21,6 +21,7 @@ import Swiper from 'react-native-swiper';
 const bg = require('../../assets/bgthree.png');
 const logo = require('../../assets/logo.png');
 import { Actions } from 'react-native-router-flux';
+import { getFmc } from '../../component/utilities/index';
 
 export default class Username extends Component {
 

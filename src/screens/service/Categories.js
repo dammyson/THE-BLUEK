@@ -8,13 +8,13 @@ import {
 } from "react-native-selectmultiple-button";
 import _ from "lodash";
 const URL = require("../../component/server");
-import Navbar from '../utilities/Navbar';
-import color from '../utilities/color';
+import Navbar from '../../component/utilities/Navbar';
+import color from '../../component/utilities/color';
 import {
     SkypeIndicator,
 } from 'react-native-indicators';
 
-import { getToken } from '../utilities/index';
+import { getToken } from '../../component/utilities/index';
 
 
 export default class CreateService extends Component {

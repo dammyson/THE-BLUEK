@@ -5,8 +5,8 @@ import { Card, Icon, SocialIcon } from 'react-native-elements'
 
 
 
-import Navbar from '../utilities/Navbar';
-import color from '../utilities/color';
+import Navbar from '../../component/utilities/Navbar';
+import color from '../../component/utilities/color';
 
 
 export default class CreateService extends Component {

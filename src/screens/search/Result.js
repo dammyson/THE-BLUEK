@@ -16,9 +16,6 @@ import {
 import CardComponent from '../User/CardComponenet';
 import { Actions } from 'react-native-router-flux';
 
-import ListPanel from '../utilities/ListPanel'
-import GridProductThumb from '../utilities/GridProductThumb'
-import homeData from '../utilities/home'
 import { Icon as Fine, Avatar } from 'react-native-elements';
 
 

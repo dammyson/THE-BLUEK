@@ -9,7 +9,7 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 
-import AppNavigatori from '../navigator/TabsNavigation';
+import AppNavigatori from '../../component/navigator/TabsNavigation';
 export default class Home extends Component{
  
   render() {

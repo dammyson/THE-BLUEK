@@ -7,14 +7,14 @@ import {
     SelectMultipleGroupButton
 } from "react-native-selectmultiple-button";
 import _ from "lodash";
-const URL = require("../server");
-import Navbar from '../utilities/Navbar';
-import color from '../utilities/color';
+const URL = require("../../component/server");
+import Navbar from '../../component/utilities/Navbar';
+import color from '../../component/utilities/color';
 import {
     SkypeIndicator,
 } from 'react-native-indicators';
 
-import { getToken } from '../utilities/index';
+import { getToken } from '../../component/utilities/index';
 
 
 export default class Step3 extends Component {

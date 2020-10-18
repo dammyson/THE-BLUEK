@@ -12,10 +12,10 @@ import {
 } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import { Icon, Avatar } from 'react-native-elements';
-import ListPanel from '../../utilities/ListPanel'
-import GridProductThumb from '../utilities/GridProductThumb'
-import Grid from '../utilities/Grid'
-import homeData from '../utilities/home'
+import ListPanel from '../../component/utilities/ListPanel'
+import GridProductThumb from '../../component/utilities/GridProductThumb'
+import Grid from '../../component/utilities/Grid'
+import homeData from '../../component/utilities/home'
 
 
 

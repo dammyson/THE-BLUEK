@@ -22,7 +22,7 @@ import Swiper from 'react-native-swiper';
 
 const bgone = require('../../assets/signupbgone.png');
 const bgtwo = require('../../assets/signupbgtwo.png');
-import { getFmc } from '../utilities/index';
+import { getFmc } from '../../component/utilities/index';
 
 const logo = require('../../assets/logo.png');
 import { Actions } from 'react-native-router-flux';

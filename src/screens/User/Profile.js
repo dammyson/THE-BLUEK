@@ -14,17 +14,15 @@ import {
 } from 'native-base';
 
 
-import ListPanel from '../utilities/ListPanel'
-import GalleryGrid from '../utilities/GalleryGrid'
-import Grid from '../utilities/Grid'
-import homeData from '../utilities/home'
+import ListPanel from '../../component/utilities/ListPanel'
+
 import { Icon as Fine, Avatar } from 'react-native-elements';
 const URL = require("../../component/server");
 import {
     SkypeIndicator,
 } from 'react-native-indicators';
 
-import { getToken } from '../utilities/index';
+import { getToken } from '../../component/utilities/index';
 export default class Profile extends React.Component {
 
     static navigationOptions = {

@@ -20,9 +20,9 @@ export default class Splash extends Component{
   async componentDidMount(){
     this.checkPermission(); 
     setTimeout(() => {
-    // this.initPage();
-     this.props.navigation.navigate('Authentication');
-    }, 1000);
+    this.initPage();
+     //this.props.navigation.navigate('Authentication');
+    }, 2000);
    }
 
   initPage = () => {
