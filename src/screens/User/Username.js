@@ -87,7 +87,7 @@ export default class Username extends Component {
       .then(res => res.json())
       .then(res => {
         if (res.status) {
-            AsyncStorage.setItem('auth', res.token.toString());
+            AsyncStorage.setItem('auth', res.token);
             AsyncStorage.setItem('rem', "login");
             this.setState({ buttonState: 'success' })
             this.replaceScreen() 
@@ -136,7 +136,7 @@ export default class Username extends Component {
                     <Text style={styles.subTitle}> Enter username and fullname</Text>
                   <TextInput
                     placeholder="Username"
-                    placeholderTextColor='#000'
+                    placeholderTextColor='#00000050'
                     returnKeyType="next"
                     onSubmitEditing={() => this.passwordInput.focus()}
                     keyboardType="email-address"
@@ -149,7 +149,7 @@ export default class Username extends Component {
 
                    <TextInput
                     placeholder="Full name"
-                    placeholderTextColor='#000'
+                    placeholderTextColor='#00000050'
                     returnKeyType="next"
                     onSubmitEditing={() => this.passwordInput.focus()}
                     keyboardType="email-address"

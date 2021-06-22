@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Image, Dimensions, TextInput, StyleSheet, AsyncStorage, Alert, ImageBackground, Platform, ActivityIndicator } from "react-native";
+import { Image, Dimensions, TextInput, StyleSheet, AsyncStorage, Alert, ImageBackground, StatusBar, ActivityIndicator } from "react-native";
 import {
   Container,
   Content,
@@ -30,9 +30,9 @@ import { Actions } from 'react-native-router-flux';
 export default class Authentication extends Component {
 
 
- async componentDidMount() {
+  async componentDidMount() {
 
-this.setState({ token: await getFmc() })
+    this.setState({ token: await getFmc() })
     AsyncStorage.setItem('rem', "login");
 
     AsyncStorage.getItem('email').then((value) => {
@@ -60,7 +60,7 @@ this.setState({ token: await getFmc() })
       loginButtonState: 'idle',
       username: '',
       password: '',
-      token:'',
+      token: '',
     };
 
   }
@@ -87,10 +87,10 @@ this.setState({ token: await getFmc() })
     var phonenumber = 0 + phone.substr(phone.length - 10);
 
     const userDetails = { phone: phonenumber }
-    this.props.navigation.navigate('Otp', 
-    {
-      userDetails: userDetails,
-    })
+    this.props.navigation.navigate('Otp',
+      {
+        userDetails: userDetails,
+      })
     /*
     
         fetch(URL.url + '/api/send_otp', {
@@ -156,7 +156,7 @@ this.setState({ token: await getFmc() })
       .then(res => {
         console.warn(res)
         if (res.status) {
-          AsyncStorage.setItem('auth', res.token.toString());
+          AsyncStorage.setItem('auth', res.token);
           AsyncStorage.setItem('rem', "login");
           this.setState({ loginButtonState: 'success' })
           this.props.navigation.navigate('Home')
@@ -179,7 +179,7 @@ this.setState({ token: await getFmc() })
   render() {
     return (
       <Container>
-
+  <StatusBar barStyle="light-content" translucent hidden={false} backgroundColor="transparent" />
         <Content contentContainerStyle={styles.contentstyles}>
 
           <Swiper style={styles.wrapper}
@@ -204,7 +204,7 @@ this.setState({ token: await getFmc() })
                     <Text style={styles.subTitle}>Enter log in details</Text>
                     <TextInput
                       placeholder="username"
-                      placeholderTextColor='#000'
+                      placeholderTextColor='#00000050'
                       returnKeyType="next"
                       onSubmitEditing={() => this.passwordInput.focus()}
                       keyboardType="email-address"
@@ -217,7 +217,7 @@ this.setState({ token: await getFmc() })
 
                     <TextInput
                       placeholder="password"
-                      placeholderTextColor='#000'
+                      placeholderTextColor='#00000050'
                       returnKeyType="next"
                       onSubmitEditing={() => this.passwordInput.focus()}
                       keyboardType='password'
@@ -275,7 +275,7 @@ this.setState({ token: await getFmc() })
                     <Text style={styles.subTitle}>Register with phone number</Text>
                     <TextInput
                       placeholder="+23481123456789"
-                      placeholderTextColor='#000'
+                      placeholderTextColor='#00000050'
                       returnKeyType="next"
                       onSubmitEditing={() => this.processRegistration()}
                       keyboardType="numeric"
@@ -392,8 +392,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 2,
     elevation: 2,
-    marginLeft: 40,
-    marginRight: 40,
+    marginLeft: 20,
+    marginRight: 20,
     borderRadius: 20,
     paddingBottom: 10,
     paddingTop: 20

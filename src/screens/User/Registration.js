@@ -121,7 +121,7 @@ export default class Registration extends Component {
 
                     <TextInput
                     placeholder="Email"
-                    placeholderTextColor='#000'
+                    placeholderTextColor='#00000050'
                     returnKeyType="next"
                     onSubmitEditing={() => this.passwordInput.focus()}
                     keyboardType="email-address"
@@ -134,11 +134,11 @@ export default class Registration extends Component {
 
                    <TextInput
                     placeholder="Password"
-                    placeholderTextColor='#000'
+                    placeholderTextColor='#00000050'
                     returnKeyType="next"
                     onSubmitEditing={() => this.passwordConfirmInput.focus()}
                     keyboardType='password'
-                      secureTextEntry
+                    secureTextEntry
                     autoCapitalize="none"
                     autoCorrect={false}
                     style={styles.input}
@@ -151,11 +151,12 @@ export default class Registration extends Component {
 
                    <TextInput
                     placeholder="Confirm Password"
-                    placeholderTextColor='#000'
+                    placeholderTextColor='#00000050'
                     returnKeyType="next"
                     onSubmitEditing={() =>this.login()}
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    secureTextEntry
                     autoCorrect={false}
                     style={styles.input}
                     inlineImageLeft='ios-call'
