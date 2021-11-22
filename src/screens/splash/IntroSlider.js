@@ -5,6 +5,7 @@ import { StyleSheet, View, Text, TouchableOpacity, Image, Dimensions, ImageBackg
 
 import Swiper from 'react-native-swiper';
 import { Actions } from 'react-native-router-flux';
+import colors from '../../component/utilities/color';
 
 export default class IntroSlider extends Component {
   constructor(props) {
@@ -64,6 +65,13 @@ export default class IntroSlider extends Component {
               >{categories[i].key}</Text>
 
             </TouchableOpacity>
+            {this.state.index == 0 ? null
+
+              : <TouchableOpacity onPress={() => this.onPrvBottonClick(link)} style={{ marginTop: 20 }}>
+                <Text style={styles.prvbuttonText}
+                >{categories[i].second_key}</Text>
+              </TouchableOpacity>}
+
           </View>
 
         </View>
@@ -83,8 +91,19 @@ export default class IntroSlider extends Component {
 
   }
 
-  onIndexChanged(ind) {
+  onPrvBottonClick(value) {
+    console.warn(value)
+    if (value.key == "Next") {
+      this.onSkip()
+    } else {
+      this.props.navigation.navigate('Authentication')
+    }
+    // 
 
+  }
+
+  onIndexChanged(ind) {
+    console.warn(ind)
     this.setState({ index: ind })
   }
   onSkip() {
@@ -110,6 +129,7 @@ var categories = [
     text: 'Find the Best Professional Service Providers around you in a few Clicks',
     image: require('../../assets/iconfour.png'),
     backgroundColor: '#59b2ab',
+    second_key: 'Previous',
   },
   {
     key: 'Next',
@@ -117,6 +137,7 @@ var categories = [
     text: 'Search, browse and hire  Blue-Collar workers around you on Bluekola.',
     image: require('../../assets/icontwo.png'),
     backgroundColor: '#febe29',
+    second_key: 'Previous',
   },
   {
     key: 'Sign in',
@@ -124,6 +145,7 @@ var categories = [
     text: 'Upload your services and start getting jobs from interested customers around you.!',
     image: require('../../assets/iconthree.png'),
     backgroundColor: '#febe29',
+    second_key: 'Previous',
   }
 ];
 const styles = StyleSheet.create({
@@ -198,5 +220,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 20
 
-  }
+  },
+  prvbuttonText: {
+    textAlign: 'center',
+    color: '#6C7395',
+    fontWeight: '900',
+
+  },
 })

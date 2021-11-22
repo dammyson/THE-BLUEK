@@ -40,7 +40,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string> nice two</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>like to acces</string>
 	<key>NSPhotoLibraryUsageDescription</key>

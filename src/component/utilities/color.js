@@ -1,6 +1,6 @@
 'use strict'
     const colors = {
-      primary_color: '#FBC02F',
+      primary_color: '#2e2a79',
       slide_color_dark: '#EAAD05',
       secondary_color: '#282977',
       disable_color: '#534BAE',

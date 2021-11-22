@@ -20,37 +20,23 @@ import {
 } from 'react-native-indicators';
 import Swiper from 'react-native-swiper';
 
-const bgone = require('../../assets/signupbgone.png');
+const bgone = require('../../assets/bgthree.png');
 const bgtwo = require('../../assets/signupbgtwo.png');
-import { getFmc } from '../../component/utilities/index';
 
-const logo = require('../../assets/logo.png');
-import { Actions } from 'react-native-router-flux';
+import { getFmc } from '../../component/utilities/index';
+import { baseUrl } from "../../utilities";
 
 export default class Authentication extends Component {
 
 
   async componentDidMount() {
-
     this.setState({ token: await getFmc() })
-    AsyncStorage.setItem('rem', "login");
-
-    AsyncStorage.getItem('email').then((value) => {
-      if (value.toString() == '') {
-        this.setState({ 'demail': "" })
-      } else {
-
-        this.setState({ 'demail': value.toString() })
-      }
-
-    })
-
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
+      email: '', //"password": "123456", "phone": "08163333333"
       password: '',
       error: '',
       login_loading: true,
@@ -58,8 +44,8 @@ export default class Authentication extends Component {
       phone: '',
       regButtonState: 'idle',
       loginButtonState: 'idle',
-      username: '',
-      password: '',
+      phone: '08163333333',
+      password: '123456',
       token: '',
     };
 
@@ -69,13 +55,13 @@ export default class Authentication extends Component {
 
   processRegistration() {
 
-    const { phone } = this.state
+    const { phonenumber } = this.state
 
-    if (phone == "") {
+    if (phonenumber == "") {
       Alert.alert('Validation failed', 'Phone field cannot be empty', [{ text: 'Okay' }])
       return
     } else {
-      if (phone.length == 15 || phone.length == 11) {
+      if (phonenumber.length == 11) {
 
       } else {
         Alert.alert('Validation failed', 'Phone number is invalid', [{ text: 'Okay' }])
@@ -84,89 +70,103 @@ export default class Authentication extends Component {
     }
 
     this.setState({ regButtonState: 'busy' })
-    var phonenumber = 0 + phone.substr(phone.length - 10);
+    var phone = "+234" + phonenumber.substr(phonenumber.length - 10);
 
-    const userDetails = { phone: phonenumber }
-    this.props.navigation.navigate('Otp',
-      {
-        userDetails: userDetails,
-      })
-    /*
-    
-        fetch(URL.url + '/api/send_otp', {
-          method: 'POST', headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          }, body: JSON.stringify({
-            phone: phonenumber,
-          }),
-        })
-          .then(res => res.json())
-          .then(res => {
-            if (res.status) {
-              const userDetails = { phone: phonenumber }
-              this.setState({ regButtonState: 'success' })
-               setTimeout(() => {
-                Actions.otp({ userDetails: userDetails });
-               }, 2000);
-    
-    
-            } else {
-    
-              Alert.alert('Operation failed', "Pleas check you details and try again", [{ text: 'Okay' }])
-              this.setState({ regButtonState: 'error' })
-              setTimeout(() => {
-                this.setState({ regButtonState: 'idle' })
-              }, 2000);
-            }
-          }).catch((error) => {
-            alert(error.message);
-            this.setState({ regButtonState: 'error' })
-            setTimeout(() => {
-              this.setState({ regButtonState: 'idle' })
-            }, 2000);
-          });
-    */
+    const userDetails = { phonenumber: phone }
+    // this.props.navigation.navigate('Otp',
+    //           {
+    //             userDetails: userDetails,
+    //           })
+
+    // console.warn(userDetails);
+
+
+    fetch(baseUrl() + '/api/UserOtp/Send', {
+      method: 'POST', headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      }, body: JSON.stringify({
+        phone: phone,
+      }),
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.warn(res);
+        if (res.success) {
+          this.setState({ regButtonState: 'success' })
+          setTimeout(() => {
+            this.props.navigation.navigate('Otp',
+              {
+                userDetails: userDetails,
+              })
+
+          }, 2000);
+        } else {
+
+          Alert.alert('Operation failed', "Pleas check you details and try again", [{ text: 'Okay' }])
+          this.setState({ regButtonState: 'error' })
+          setTimeout(() => {
+            this.setState({ regButtonState: 'idle' })
+          }, 2000);
+        }
+      }).catch((error) => {
+        alert(error.message);
+        this.setState({ regButtonState: 'error' })
+        setTimeout(() => {
+          this.setState({ regButtonState: 'idle' })
+        }, 2000);
+      });
+
   }
 
 
   processLogin() {
 
-    const { username, password, token } = this.state
+    const { phone, password, token } = this.state
 
-    if (username == "" || password == "") {
+    if (phone == "" || password == "") {
       Alert.alert('Validation failed', 'Userdetails field cannot be empty', [{ text: 'Okay' }])
       return
     }
 
+    if (phone.length == 11) {
 
+    } else {
+      Alert.alert('Validation failed', 'Phone number is invalid', [{ text: 'Okay' }])
+      return
+    }
+
+    var phone_main = "234" + phone.substr(phone.length - 10);
+
+var req= {
+  phone: phone_main,
+  password: password,
+  //mobile_token: token
+}
+    console.warn(req)
     this.setState({ loginButtonState: 'busy' })
 
-    fetch(URL.url + '/api/login', {
+    fetch(baseUrl() + '/api/Auth/Authenticate', {
       method: 'POST', headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-      }, body: JSON.stringify({
-        username: username,
-        password: password,
-        mobile_token: token
-      }),
+      }, body: JSON.stringify(req),
     })
       .then(res => res.json())
       .then(res => {
         console.warn(res)
-        if (res.status) {
-          AsyncStorage.setItem('auth', res.token);
-          AsyncStorage.setItem('rem', "login");
-          this.setState({ loginButtonState: 'success' })
-          this.props.navigation.navigate('Home')
-        } else {
-          Alert.alert('Operation failed', "Pleas check you details and try again", [{ text: 'Okay' }])
-          this.setState({ loginButtonState: 'error' })
-          setTimeout(() => {
-            this.setState({ loginButtonState: 'idle' })
-          }, 2000);
-        }
+        // if (res.status) {
+        //   AsyncStorage.setItem('auth', res.token);
+        //   AsyncStorage.setItem('rem', "login");
+        //   this.setState({ loginButtonState: 'success' })
+        //   this.props.navigation.navigate('Home')
+        // } else {
+        //   Alert.alert('Operation failed', "Pleas check you details and try again", [{ text: 'Okay' }])
+        //   this.setState({ loginButtonState: 'error' })
+        //   setTimeout(() => {
+        //     this.setState({ loginButtonState: 'idle' })
+        //   }, 2000);
+        // }
       }).catch((error) => {
         alert(error.message);
         this.setState({ loginButtonState: 'error' })
@@ -179,7 +179,7 @@ export default class Authentication extends Component {
   render() {
     return (
       <Container>
-  <StatusBar barStyle="light-content" translucent hidden={false} backgroundColor="transparent" />
+        <StatusBar barStyle="light-content" translucent hidden={false} backgroundColor="transparent" />
         <Content contentContainerStyle={styles.contentstyles}>
 
           <Swiper style={styles.wrapper}
@@ -193,26 +193,29 @@ export default class Authentication extends Component {
               <View style={styles.main}>
 
                 <View style={styles.formArea}>
-                  <Image style={styles.image}
-                    source={require('../../assets/iconfive.png')}
-                    resizeMode='contain'
-                  />
+                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Image style={styles.image}
+                      source={require('../../assets/iconfive.png')}
+                      resizeMode='contain'
+                    />
+                  </View>
+
                   <View style={styles.titleContainer}>
                     <Text style={styles.title}>Sign In</Text>
                   </View>
                   <View style={styles.card} >
                     <Text style={styles.subTitle}>Enter log in details</Text>
                     <TextInput
-                      placeholder="username"
+                      placeholder="phone"
                       placeholderTextColor='#00000050'
                       returnKeyType="next"
+                      maxLength={11}
                       onSubmitEditing={() => this.passwordInput.focus()}
-                      keyboardType="email-address"
+                      keyboardType="numeric"
                       autoCapitalize="none"
-                      autoCorrect={false}
                       style={styles.input}
                       inlineImageLeft='ios-call'
-                      onChangeText={text => this.setState({ username: text })}
+                      onChangeText={text => this.setState({ phone: text })}
                     />
 
                     <TextInput
@@ -223,7 +226,6 @@ export default class Authentication extends Component {
                       keyboardType='password'
                       secureTextEntry
                       autoCapitalize="none"
-                      autoCorrect={false}
                       style={styles.passinput}
                       inlineImageLeft='ios-call'
                       onChangeText={text => this.setState({ password: text })}
@@ -247,34 +249,64 @@ export default class Authentication extends Component {
                             <Text style={{ color: '#fdfdfd', fontWeight: '700' }}>ENTER</Text>
                           </Button>}
 
+
+
+
+                    <View style={{ flexDirection: 'row', marginTop: 10, marginHorizontal: 30 }}>
+                      <View style={{ flexDirection: 'row', flex: 1 }}>
+                        <View style={{
+                          height: 20,
+                          width: 20,
+                          borderColor: '#E6E6E6',
+                          borderWidth: 1,
+                          marginRight: 10,
+                          borderRadius: 1,
+                          justifyContent: 'center',
+                          alignItems: 'center'
+                        }}>
+                          <Icon name="ios-checkbox" size={22} type='ionicon' color='#394FA1' />
+                        </View>
+                        <Text style={{ fontSize: 12 }}>Remember password </Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'flex-end' }}>
+                        <Text style={{ fontSize: 12 }}> Forgot password </Text>
+                      </View>
+                    </View>
+                  
+
+
+
                   </View>
 
+                  <Text style={{ fontSize: 14, color:'#fff', marginBottom:15, marginLeft: 20 }}>Swipe Left to Register</Text>
+
                 </View>
 
-                <View style={styles.instructions}>
-                  <Text style={styles.instructionTitle}>Not a member?</Text>
-                  <Text style={styles.instructionSubTitle}> Swipe Right to Sign up</Text>
-                </View>
+
               </View>
 
 
             </ImageBackground>
 
             <ImageBackground source={bgone} style={styles.background}>
-              <View style={styles.main}>
+              <View style={{ flex: 1, justifyContent: 'center', }}>
 
-                <View style={styles.formArea}>
-                  <Image style={styles.image}
-                    source={require('../../assets/iconone.png')}
-                    resizeMode='contain'
-                  />
+                <View style={{ flex: 1, }}>
+                  <View style={{ height: 30 }}></View>
+                  <View style={{ height: 30, paddingLeft: 20, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                    <Icon name="left" size={30} type='antdesign' color='#fff' />
+                  </View>
                   <View style={styles.titleContainer}>
                     <Text style={styles.title}>Register</Text>
                   </View>
                   <View style={styles.card} >
-                    <Text style={styles.subTitle}>Register with phone number</Text>
+
+                    <View style={{ height: 30 }}></View>
+                    <Text style={[styles.subTitle, { fontSize: 16, }]}>Enter your Number</Text>
+                    <Text style={{ marginRight: 13, fontSize: 14, color: '#6C7395', textAlign: 'left', marginLeft: 30, marginBottom: 20 }}>Enter phone number</Text>
                     <TextInput
-                      placeholder="+23481123456789"
+                      placeholder="081123456789"
+                      maxLength={11}
                       placeholderTextColor='#00000050'
                       returnKeyType="next"
                       onSubmitEditing={() => this.processRegistration()}
@@ -283,18 +315,18 @@ export default class Authentication extends Component {
                       autoCorrect={false}
                       style={styles.input}
                       inlineImageLeft='ios-call'
-                      onChangeText={text => this.setState({ phone: text })}
+                      onChangeText={text => this.setState({ phonenumber: text })}
                     />
 
-                    {this.state.loginButtonState == 'busy' ?
+                    {this.state.regButtonState == 'busy' ?
                       <Button style={styles.buttonContainer} block iconLeft>
                         <SkypeIndicator color='white' />
                       </Button>
-                      : this.state.loginButtonState == 'success' ?
+                      : this.state.regButtonState == 'success' ?
                         <Button style={styles.successButtonContainer} block iconLeft>
                           <Icon name="check" size={30} type='antdesign' color='#fff' />
                         </Button>
-                        : this.state.loginButtonState == 'error' ?
+                        : this.state.regButtonState == 'error' ?
                           <Button style={styles.errorButtonContainer} block iconLeft>
                             <Icon name="close" size={30} type='antdesign' color='#fff' />
                           </Button>
@@ -303,42 +335,21 @@ export default class Authentication extends Component {
                             <Text style={{ color: '#fdfdfd', fontWeight: '700' }}>ENTER</Text>
                           </Button>}
 
-                    <View style={styles.inputContainer}>
-                      <View style={styles.lineStyle} />
-                      <Text style={{ color: 'black', margin: 10, fontSize: 15, fontWeight: '200' }}>or</Text>
-                      <View style={styles.lineStyle} />
-                    </View>
-                    <View style={{}}>
-                      <Text style={styles.subTitle}>Register with social media</Text>
-                    </View>
+                    <View style={{ height: 10 }}></View>
 
-                    <View style={styles.socialContainer}>
-                      <SocialIcon
-                        type='facebook'
-                        iconSize={18}
-                      />
-
-                      <SocialIcon
-                        type='google-plus-official'
-                        iconSize={18}
-                      />
-                      <SocialIcon
-                        type='twitter'
-                        iconSize={18}
-                      />
-                      <SocialIcon
-
-                        type='instagram'
-                        iconSize={18}
-                      />
-                    </View>
                   </View>
 
                 </View>
-
+                <View style={{ alignItems: 'center', }}>
+                  <Text style={{ fontSize: 14, color: '#fff', textAlign: 'left', marginBottom: 10 }}>1 of 4</Text>
+                </View>
                 <View style={styles.instructions}>
-                  <Text style={styles.instructionTitle}>Already have an account?</Text>
-                  <Text style={styles.instructionSubTitle}> Swipe Left to login</Text>
+                  <View style={{ marginHorizontal: 50, flexDirection: 'row' }}>
+                    <View style={{ height: 6, backgroundColor: '#FFFFFF', flex: 1, marginHorizontal: 2, borderRadius: 3 }} />
+                    <View style={{ height: 6, backgroundColor: '#FFFFFF30', flex: 1, marginHorizontal: 2, borderRadius: 3 }} />
+                    <View style={{ height: 6, backgroundColor: '#FFFFFF30', flex: 1, marginHorizontal: 2, borderRadius: 3 }} />
+                    <View style={{ height: 6, backgroundColor: '#FFFFFF30', flex: 1, marginHorizontal: 2, borderRadius: 3 }} />
+                  </View>
                 </View>
               </View>
             </ImageBackground>
@@ -351,6 +362,8 @@ export default class Authentication extends Component {
 
     );
   }
+
+
 }
 const styles = StyleSheet.create({
   container: {
@@ -383,8 +396,10 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'flex-start'
   },
   card: {
+    width: Dimensions.get("window").width - 40,
     justifyContent: 'center',
     backgroundColor: '#fff',
     shadowColor: '#000',
@@ -395,32 +410,37 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     borderRadius: 20,
-    paddingBottom: 10,
-    paddingTop: 20
+    paddingBottom: 20,
+    paddingTop: 20,
+    marginBottom: 20,
   },
   input: {
-    height: 45,
+    height: 50,
     borderColor: '#3E3E3E',
     color: '#3E3E3E',
     marginTop: 10,
     borderRadius: 20,
     marginLeft: 30,
     marginRight: 30,
-    backgroundColor: '#f1f1f1',
+    backgroundColor: '#ffffff',
     borderColor: '#ffffff',
-    paddingLeft: 20
+    paddingLeft: 20,
+    borderColor: '#E6E6E6',
+    borderWidth: 1
   },
   passinput: {
-    height: 45,
+    height: 50,
     borderColor: '#3E3E3E',
     color: '#3E3E3E',
     marginTop: 19,
     borderRadius: 20,
     marginLeft: 30,
     marginRight: 30,
-    backgroundColor: '#f1f1f1',
+    backgroundColor: '#ffffff',
     borderColor: '#ffffff',
-    paddingLeft: 20
+    paddingLeft: 20,
+    borderColor: '#E6E6E6',
+    borderWidth: 1
   },
   titleContainer: {
     marginLeft: 40,
@@ -438,7 +458,7 @@ const styles = StyleSheet.create({
   subTitle: {
     marginRight: 13,
     fontSize: 14,
-    color: '#000',
+    color: '#324152',
     textAlign: 'left',
     fontWeight: '700',
     marginLeft: 30,
@@ -522,3 +542,6 @@ const styles = StyleSheet.create({
   },
 
 })
+
+
+

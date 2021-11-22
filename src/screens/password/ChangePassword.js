@@ -24,7 +24,7 @@ import { Actions } from 'react-native-router-flux';
 import { baseUrl } from "../../utilities";
 
 
-export default class Registration extends Component {
+export default class ChangePassword extends Component {
 
 
   constructor(props) {

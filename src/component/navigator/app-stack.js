@@ -20,6 +20,8 @@ import Settings from '../../screens/settings/Settings';
 
 
 import { Root } from 'native-base';
+import ChangePassOtp from '../../screens/password/ChangePassOtp';
+import ChangePassword from '../../screens/password/ChangePassword';
 
 class AppStack extends Component {
 
@@ -36,8 +38,9 @@ class AppStack extends Component {
               //headerLeft: null,
               headerShown: false,
              }}
-             initialRouteName="Splash"
-             >
+             initialRouteName="Splash">
+
+
             <Stack.Screen name="Splash" component={Splash}  />
             <Stack.Screen name="IntroSlider" component={IntroSlider}  />
             <Stack.Screen name="Authentication" component={Authentication}  />
@@ -45,7 +48,8 @@ class AppStack extends Component {
             <Stack.Screen name="Username" component={Username}  />
             <Stack.Screen name="Otp" component={Otp}  />
             <Stack.Screen name="ForgotPassword" component={ForgotPassword}  />
-            <Stack.Screen   name="Create" component={Create}  />
+            <Stack.Screen name="ChangePassOtp" component={ChangePassOtp}  />
+            <Stack.Screen name="ChangePassword" component={ChangePassword}  />
 
             <Stack.Screen name="Home" component={Home}  />
             <Stack.Screen name="Profile" component={Profile}  />

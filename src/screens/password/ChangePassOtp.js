@@ -19,9 +19,8 @@ const bg = require('../../assets/bgthree.png');
 const logo = require('../../assets/logo.png');
 import { Actions } from 'react-native-router-flux';
 import OTPInputView from '@twotalltotems/react-native-otp-input'
-import { baseUrl } from "../../utilities";
 
-export default class Otp extends Component {
+export default class ChangePassOtp extends Component {
 
 
 
@@ -47,7 +46,6 @@ export default class Otp extends Component {
 
 
   }
-
 
 
   proccessVerification() {
@@ -99,8 +97,6 @@ export default class Otp extends Component {
 
   }
 
-
-
   render() {
     const { userDetails } = this.state
     return (
@@ -118,8 +114,8 @@ export default class Otp extends Component {
 
                     <View style={{ height: 30 }}></View>
                     <View style={{ height: 30, paddingLeft: 20, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                      <TouchableOpacity onPress={() => this.props.navigation.goBack(null)} >
-                        <Icon name="left" size={30} type='antdesign' color='#fff' />
+                    <TouchableOpacity onPress={() => this.props.navigation.goBack(null)} >
+                      <Icon name="left" size={30} type='antdesign' color='#fff' />
                       </TouchableOpacity>
                     </View>
 
@@ -140,6 +136,7 @@ export default class Otp extends Component {
                           <OTPInputView
                             style={{ width: '80%', height: 60 }}
                             pinCount={4}
+
                             autoFocusOnLoad
                             codeInputFieldStyle={styles.underlineStyleBase}
                             codeInputHighlightStyle={styles.underlineStyleHighLighted}
@@ -155,30 +152,30 @@ export default class Otp extends Component {
                             <SkypeIndicator color='white' />
                           </Button>
                           : this.state.buttonState == 'success' ?
-                            <Button  style={styles.successButtonContainer} block iconLeft>
+                            <Button onPress={() => this.logIn()} style={styles.successButtonContainer} block iconLeft>
                               <Icon name="check" size={30} type='antdesign' color='#fff' />
                             </Button>
                             : this.state.buttonState == 'error' ?
-                              <Button style={styles.errorButtonContainer} block iconLeft>
-                                <Icon name="close" size={30} type='antdesign' color='#fff' />
-                              </Button>
-                              :
-                              <Button onPress={() => this.proccessVerification()} style={styles.buttonContainer} block iconLeft>
-                                <Text style={{ color: '#fdfdfd', fontWeight: '700' }}>ENTER</Text>
-                              </Button>}
+                            <Button style={styles.errorButtonContainer} block iconLeft>
+                              <Icon name="close" size={30} type='antdesign' color='#fff' />
+                            </Button>
+                            :
+                            <Button onPress={() => this.proccessVerification()} style={styles.buttonContainer} block iconLeft>
+                              <Text style={{ color: '#fdfdfd', fontWeight: '700' }}>ENTER</Text>
+                            </Button>}
 
                       </View>
 
                     </View>
-                    <View style={{ alignItems: 'center', }}>
-                      <Text style={{ fontSize: 14, color: '#fff', textAlign: 'left', marginBottom: 10 }}>2 of 4</Text>
-                    </View>
+                    <View style={{  alignItems: 'center',}}>
+                    <Text style={{fontSize: 14, color: '#fff', textAlign: 'left', marginBottom: 10 }}>2 of 4</Text>
+                  </View>
                     <View style={styles.instructions}>
                       <View style={{ marginHorizontal: 50, flexDirection: 'row' }}>
                         <View style={{ height: 6, backgroundColor: '#FFFFFF30', flex: 1, marginHorizontal: 2, borderRadius: 3 }} />
                         <View style={{ height: 6, backgroundColor: '#FFFFFF', flex: 1, marginHorizontal: 2, borderRadius: 3 }} />
                         <View style={{ height: 6, backgroundColor: '#FFFFFF30', flex: 1, marginHorizontal: 2, borderRadius: 3 }} />
-                        <View style={{ height: 6, backgroundColor: '#FFFFFF30', flex: 1, marginHorizontal: 2, borderRadius: 3 }} />
+                       
                       </View>
                     </View>
                   </View>
@@ -291,16 +288,12 @@ const styles = StyleSheet.create({
     marginLeft: 40,
     marginRight: 20,
   },
-
   instructions: {
     marginBottom: 20,
   },
-
-
   borderStyleHighLighted: {
     borderColor: "#000",
   },
-
   underlineStyleBase: {
     width: 45,
     height: 45,
@@ -314,7 +307,6 @@ const styles = StyleSheet.create({
     color: 'black'
 
   },
-
   underlineStyleHighLighted: {
     borderColor: "#000",
   },
@@ -322,6 +314,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   }
-
-
 })

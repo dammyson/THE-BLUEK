@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Image, Dimensions, TextInput, StyleSheet, AsyncStorage, Alert, ImageBackground, Platform, ActivityIndicator, TouchableOpacity } from "react-native";
+import { Image, Dimensions, TextInput, StyleSheet, AsyncStorage, Alert, ImageBackground, TouchableOpacity, ActivityIndicator } from "react-native";
 import {
   Container,
   Content,
@@ -8,9 +8,9 @@ import {
   Input,
   Button,
   View,
- 
+
 } from "native-base";
-import {  Icon} from 'react-native-elements'
+import { Icon } from 'react-native-elements'
 const URL = require("../../component/server");
 import {
   SkypeIndicator,
@@ -21,91 +21,51 @@ import Swiper from 'react-native-swiper';
 const bg = require('../../assets/bgthree.png');
 const logo = require('../../assets/logo.png');
 import { Actions } from 'react-native-router-flux';
-import { getFmc } from '../../component/utilities/index';
 
-export default class Username extends Component {
+
+export default class Names extends Component {
+
 
   constructor(props) {
     super(props);
     this.state = {
-      userDetails: {},
-      username: '',
-      name: '',
-      buttonState: 'idle',
-      token: ''
+      fname: '',
+      lname: '',
+      phone: ''
     };
+
+  }
+
+  componentDidMount() {
+
+    const { userDetails  } = this.props.route.params;
+    this.setState({
+      phone: userDetails.phonenumber
+    })
+
 
   }
 
 
 
- async componentDidMount() {
 
-    const { userDetails  } = this.props.route.params;
-    this.setState({
-      userDetails: userDetails
-    })
+  logIn() {
 
-    this.setState({ token: await getFmc() })
+    this.setState({ buttonState: 'busy' })
+    const { phone, lname, fname } = this.state
+    const userDetails = { phone: phone, firstName: fname, lastName:lname }
 
-    }
+    setTimeout(() => {
+      this.setState({ buttonState: 'success' })
+      setTimeout(() => {
+        this.props.navigation.navigate('Registration',
+          {
+            userDetails: userDetails,
+          })
+      }, 2000);
 
-    replaceScreen = () => {
-      const { userDetails } = this.state
-      this.props.navigation.navigate('Home');
-   /*   this.props.navigation.dispatch({
-        key: 'Home',
-        type: 'ReplaceCurrentScreen',
-        routeName: 'Home',
-        params: { },
-      });  */
-    };
+    }, 2000);
 
-
-  processRegistration() {
-    const { username,token, name,userDetails} = this.state
-  console.warn(username, name,userDetails)
-    if (username == "" || name == "") {
-      Alert.alert('Validation failed', ' Fields cannot be empty', [{ text: 'Okay' }])
-      return
-    }
-
-     this.setState({ buttonState: 'busy' })
-    fetch(URL.url + '/api/register', {
-      method: 'POST', headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      }, body: JSON.stringify({
-        name: name,
-        email: userDetails.email,
-        password: userDetails.password,
-        phone:userDetails.phone,
-        username:username,
-        mobile_token: token
-      }),
-    })
-      .then(res => res.json())
-      .then(res => {
-        if (res.status) {
-            AsyncStorage.setItem('auth', res.token);
-            AsyncStorage.setItem('rem', "login");
-            this.setState({ buttonState: 'success' })
-            this.replaceScreen() 
-        } else {
-            this.setState({ buttonState: 'error' })
-           Alert.alert('Login failed', res.message, [{ text: 'Okay' }])
-          setTimeout(() => {
-            this.setState({ buttonState: 'idle' })
-          }, 2000);
-
-        }
-      }).catch((error) => {
-        alert(error.message);
-        this.setState({ buttonState: 'error' })
-        setTimeout(() => {
-          this.setState({ buttonState: 'idle' })
-        }, 2000);
-      });
   }
 
 
@@ -117,72 +77,86 @@ export default class Username extends Component {
 
             <Swiper style={styles.wrapper}>
 
-            <View style={styles.main}>
+              <View style={styles.main}>
 
-              <View style={styles.formArea}>
-
-              <TouchableOpacity onPress={() => this.props.navigation.goBack(null)} style={styles.arrowContainer}>
-              <Icon
-                name="arrowleft"
-                size={30}
-                type='antdesign'
-                color= '#fff'
-              />
-              </TouchableOpacity>
-                <View style={styles.card} >
-                <View style={styles.titleContainer}>
-                    <Text style={styles.title}> Create Username and Fullname </Text>
+                <View style={styles.formArea}>
+                  <View style={{ height: 30 }}></View>
+                  <View style={{ height: 30, paddingLeft: 20, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                    <TouchableOpacity onPress={() => this.props.navigation.goBack(null)} >
+                      <Icon name="left" size={30} type='antdesign' color='#fff' />
+                    </TouchableOpacity>
                   </View>
-                    <Text style={styles.subTitle}> Enter username and fullname</Text>
-                  <TextInput
-                    placeholder="Username"
-                    placeholderTextColor='#00000050'
-                    returnKeyType="next"
-                    onSubmitEditing={() => this.passwordInput.focus()}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    style={styles.input}
-                    inlineImageLeft='ios-call'
-                    onChangeText={text => this.setState({ username: text })}
-                  />
+                  <View style={{ height: 30 }}></View>
 
-                   <TextInput
-                    placeholder="Full name"
-                    placeholderTextColor='#00000050'
-                    returnKeyType="next"
-                    onSubmitEditing={() => this.passwordInput.focus()}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    style={styles.input}
-                    inlineImageLeft='ios-call'
-                    onChangeText={text => this.setState({ name: text })}
-                   />
+                  <View style={styles.arrowContainer}>
+                  </View>
+                  <View style={styles.card} >
+                    <View style={{ height: 30 }}></View>
+                    <Text style={[styles.subTitle, { fontSize: 16, }]}>Create New Password</Text>
+                    <Text style={{ marginRight: 13, fontSize: 14, color: '#6C7395', textAlign: 'left', marginLeft: 30, marginBottom: 20 }}>Enter and password</Text>
+                    <TextInput
+                      placeholder="First Name"
+                      placeholderTextColor='#00000050'
+                      returnKeyType="next"
+                      onSubmitEditing={() => this.lastname.focus()}
+                      keyboardType='default'
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      style={styles.input}
+                      inlineImageLeft='ios-call'
+                      onChangeText={text => this.setState({ fname: text })}
+                    />
 
-                  {this.state.buttonState =='busy' ?  
-                  <Button style={styles.buttonContainer} block iconLeft>
-                   <SkypeIndicator color='white' />  
-                  </Button>               
-                  : this.state.buttonState =='success' ?    
-                   <Button style={styles.successButtonContainer} block iconLeft>
-                  <Icon  name="check" size={30}  type='antdesign'  color= '#fff' />
-                  </Button> 
-                  : this.state.buttonState =='error' ?    
-                  <Button style={styles.errorButtonContainer} block iconLeft>
-                 <Icon  name="close" size={30}  type='antdesign'  color= '#fff' />
-                 </Button> 
-                 : 
-                  <Button onPress={() => this.processRegistration()} style={styles.buttonContainer} block iconLeft>
-                 <Text style={{ color: '#fdfdfd', fontWeight: '700' }}>ENTER</Text>
-                 </Button>     }
+
+
+                    <TextInput
+                      placeholder="Last Name"
+                      placeholderTextColor='#00000050'
+                      returnKeyType="next"
+                      onSubmitEditing={() => this.logIn()}
+                      keyboardType="default"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      style={styles.input}
+                      inlineImageLeft='ios-call'
+                      onChangeText={text => this.setState({ lname: text })}
+                      ref={(input) => this.lastname = input}
+                    />
+
+                    {this.state.buttonState == 'busy' ?
+                      <Button style={styles.buttonContainer} block iconLeft>
+                        <SkypeIndicator color='white' />
+                      </Button>
+                      : this.state.buttonState == 'success' ?
+                        <Button style={styles.successButtonContainer} block iconLeft>
+                          <Icon name="check" size={30} type='antdesign' color='#fff' />
+                        </Button>
+                        :
+                        <Button onPress={() => this.logIn()} style={styles.buttonContainer} block iconLeft>
+                          <Text style={{ color: '#fdfdfd', fontWeight: '700' }}>ENTER</Text>
+                        </Button>}
+
+                    <View style={{ height: 10 }}></View>
+
+                  </View>
 
                 </View>
+                <View style={{  alignItems: 'center',}}>
+                    <Text style={{fontSize: 14, color: '#fff', textAlign: 'left', marginBottom: 10 }}>3 of 4</Text>
+                  </View>
 
+                <View style={styles.instructions}>
+                 
+                  <View style={{ marginHorizontal: 50, flexDirection: 'row' }}>
+                    <View style={{ height: 6, backgroundColor: '#FFFFFF30', flex: 1, marginHorizontal: 2, borderRadius: 3 }} />
+                    <View style={{ height: 6, backgroundColor: '#FFFFFF30', flex: 1, marginHorizontal: 2, borderRadius: 3 }} />
+                    <View style={{ height: 6, backgroundColor: '#FFFFFF', flex: 1, marginHorizontal: 2, borderRadius: 3 }} />
+                    <View style={{ height: 6, backgroundColor: '#FFFFFF30', flex: 1, marginHorizontal: 2, borderRadius: 3 }} />
+                  </View>
+                </View>
               </View>
-            </View>
-           
-             </Swiper>
+
+            </Swiper>
           </Content>
         </ImageBackground>
       </Container>
@@ -211,14 +185,12 @@ const styles = StyleSheet.create({
   },
   formArea: {
     flex: 1,
-    justifyContent: 'center',
   },
   slideArea: {
     justifyContent: 'center',
   },
   main: {
     flex: 1,
-    justifyContent: 'center',
   },
   card: {
     justifyContent: 'center',
@@ -244,7 +216,7 @@ const styles = StyleSheet.create({
     marginRight: 30,
     backgroundColor: '#f1f1f1',
     borderColor: '#ffffff',
-    paddingLeft:20
+    paddingLeft: 20
   },
   titleContainer: {
     marginLeft: 30,
@@ -254,7 +226,7 @@ const styles = StyleSheet.create({
   title: {
     marginTop: 20,
     marginBottom: 10,
-    fontSize: 16,
+    fontSize: 20,
     color: '#000',
     textAlign: 'left',
     fontWeight: '800'
@@ -262,11 +234,10 @@ const styles = StyleSheet.create({
   subTitle: {
     marginRight: 13,
     fontSize: 14,
-    color: '#000',
+    color: '#324152',
     textAlign: 'left',
     fontWeight: '700',
     marginLeft: 30,
-    marginBottom: 20,
   },
   buttonContainer: {
     backgroundColor: "#1A4093",
@@ -282,19 +253,45 @@ const styles = StyleSheet.create({
     marginTop: 40,
     borderRadius: 20,
   },
-  errorButtonContainer: {
-    backgroundColor: "#e60a13",
-    marginLeft: 30,
-    marginRight: 30,
-    marginTop: 40,
-    borderRadius: 20,
-  },
   arrowContainer: {
     flexDirection: "row",
     marginBottom: 15,
-    justifyContent:'flex-start',
+    justifyContent: 'flex-start',
     marginLeft: 40,
     marginRight: 20,
   },
- 
+  card: {
+    width: Dimensions.get("window").width - 40,
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 2,
+    marginLeft: 20,
+    marginRight: 20,
+    borderRadius: 20,
+    paddingBottom: 20,
+    paddingTop: 20,
+    marginBottom: 20,
+  },
+  input: {
+    height: 50,
+    borderColor: '#3E3E3E',
+    color: '#3E3E3E',
+    marginTop: 10,
+    borderRadius: 20,
+    marginLeft: 30,
+    marginRight: 30,
+    backgroundColor: '#ffffff',
+    borderColor: '#ffffff',
+    paddingLeft: 20,
+    borderColor: '#E6E6E6',
+    borderWidth: 1
+  },
+  instructions: {
+    marginBottom: 20,
+  },
+
 })
