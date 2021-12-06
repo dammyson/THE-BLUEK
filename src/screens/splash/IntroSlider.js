@@ -85,7 +85,7 @@ export default class IntroSlider extends Component {
     if (value.key == "Next") {
       this.onSkip()
     } else {
-      this.props.navigation.navigate('Authentication')
+      this.props.navigation.replace('Authentication')
     }
     // 
 
@@ -96,7 +96,7 @@ export default class IntroSlider extends Component {
     if (value.key == "Next") {
       this.onSkip()
     } else {
-      this.props.navigation.navigate('Authentication')
+      this.props.navigation.replace('Authentication')
     }
     // 
 

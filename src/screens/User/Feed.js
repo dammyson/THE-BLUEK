@@ -34,7 +34,7 @@ class Feed extends React.Component {
 
 
     componentDidMount() {
-        this.loadServices();
+       // this.loadServices();
     }
 
 

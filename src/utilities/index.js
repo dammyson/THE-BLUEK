@@ -13,6 +13,16 @@ export const storeToken = async (selectedValue) => {
   }
 }
 
+
+export const storeUser = async (selectedValue) => {
+  try {
+    await AsyncStorage.setItem('user', selectedValue);
+
+  } catch (error) {
+    console.warn('AsyncStorage error: ' + error.message);
+  }
+}
+
 export const storeEmail = async ( email) => {
   try {
     await AsyncStorage.setItem('user_email', email);

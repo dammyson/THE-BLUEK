@@ -54,8 +54,8 @@ export default class Otp extends Component {
 
     const { userDetails, otp } = this.state
 
-    if (otp != 4) {
-      Alert.alert('Validation failed', 'Phone number is invalid', [{ text: 'Okay' }])
+    if (otp.length != 4) {
+      Alert.alert('Validation failed', 'Otp is invalid', [{ text: 'Okay' }])
       return
     } 
 
@@ -81,7 +81,7 @@ export default class Otp extends Component {
           }, 2000);
         } else {
 
-          Alert.alert('Login failed', "Check your email and password and try again", [{ text: 'Okay' }])
+          Alert.alert('Login failed', "Invalid Otp", [{ text: 'Okay' }])
 
           this.setState({ regButtonState: 'error' })
           setTimeout(() => {

@@ -24,7 +24,7 @@ const bgone = require('../../assets/bgthree.png');
 const bgtwo = require('../../assets/signupbgtwo.png');
 
 import { getFmc } from '../../component/utilities/index';
-import { baseUrl } from "../../utilities";
+import { baseUrl, storeToken, storeUser } from "../../utilities";
 
 export default class Authentication extends Component {
 
@@ -37,14 +37,12 @@ export default class Authentication extends Component {
     super(props);
     this.state = {
       email: '', //"password": "123456", "phone": "08163333333"
-      password: '',
       error: '',
       login_loading: true,
       demail: "",
-      phone: '',
       regButtonState: 'idle',
       loginButtonState: 'idle',
-      phone: '08163333333',
+      phone: '08166219698',
       password: '123456',
       token: '',
     };
@@ -143,7 +141,6 @@ var req= {
   password: password,
   //mobile_token: token
 }
-    console.warn(req)
     this.setState({ loginButtonState: 'busy' })
 
     fetch(baseUrl() + '/api/Auth/Authenticate', {
@@ -154,19 +151,20 @@ var req= {
     })
       .then(res => res.json())
       .then(res => {
-        console.warn(res)
-        // if (res.status) {
-        //   AsyncStorage.setItem('auth', res.token);
-        //   AsyncStorage.setItem('rem', "login");
-        //   this.setState({ loginButtonState: 'success' })
-        //   this.props.navigation.navigate('Home')
-        // } else {
-        //   Alert.alert('Operation failed', "Pleas check you details and try again", [{ text: 'Okay' }])
-        //   this.setState({ loginButtonState: 'error' })
-        //   setTimeout(() => {
-        //     this.setState({ loginButtonState: 'idle' })
-        //   }, 2000);
-        // }
+        console.warn(res.data.user)
+        if (res.success) {
+           storeToken(res.data.token)
+           storeUser(JSON.stringify(res.data.user))
+           AsyncStorage.setItem('rem', "login");
+           this.setState({ loginButtonState: 'success' })
+          this.props.navigation.replace('Home')
+        } else {
+          Alert.alert('Operation failed', "Pleas check you details and try again", [{ text: 'Okay' }])
+          this.setState({ loginButtonState: 'error' })
+          setTimeout(() => {
+            this.setState({ loginButtonState: 'idle' })
+          }, 2000);
+        }
       }).catch((error) => {
         alert(error.message);
         this.setState({ loginButtonState: 'error' })
